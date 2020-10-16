@@ -1,10 +1,11 @@
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 
+
 import './services/firebase';
 
 import Routes from './routes';
-import AppProvider from './hook/index';
+import AppProvider from './hooks/index';
 
 function App() {
   return (

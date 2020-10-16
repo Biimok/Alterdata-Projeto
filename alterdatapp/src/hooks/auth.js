@@ -6,7 +6,7 @@ import React, {
   useEffect
 } from 'react';
 
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 import 'firebase/auth';
 
 const AuthContext = createContext({});
@@ -29,7 +29,7 @@ const AuthProvider = ({ children }) => {
   const signUp = useCallback(async ({ email, password }) => {
     firebase
       .auth()
-      .createUserWithEmailAndPassword(email. password)
+      .createUserWithEmailAndPassword(email, password)
       .then(resp => {
         console.log('firebase user created');
       })
