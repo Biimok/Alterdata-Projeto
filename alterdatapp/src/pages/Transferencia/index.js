@@ -9,7 +9,7 @@ import { Transf } from './styles';
 // import { Container } from './styles';
 
 function Transferencia() { 
-const batch = firebase.firestore().batch();
+
 
 const [listaEmpresas, setListaEmpresas] = useState([]);
 const [listaProdutos, setListaProdutos] = useState([]);
@@ -54,49 +54,88 @@ const getProdutos = useCallback(async () => {
   }
 }, []);
 
-const upRelatorios = async () => {
+const upRelatorios = () => {
+  const batch = firebase.firestore().batch();
 
-  
-    await firestore().collection('relatorios').add({
-      empresaEntrada: {
-        nome: empresaEntrada.nome,
-        id: empresaEntrada.id
-      },
-      empresaSaida: {
-        nome: empresaSaida.nome,
-        id: empresaSaida.id
-      },
-      dataEntrega: dataEntrega.toLocaleDateString('pt-BR'),
-      dataRealizada: new Date().toLocaleDateString('pt-BR'),
-      descricao: descricao,
-      produtos : produtosSelec
-    }).then(() => {
-      console.log('sucess relatorio')
-    })
-      .catch((error) => {
-        console.log('error relatorio', error)
-      });
-
-      produtosSelec.forEach( async (doc) => {
-        let docEntRef =  firestore()
-                         .collection('empresas')
-                         .doc(empresaEntrada.id)
-                         .collection('produtosVinculados')
-                         .doc(doc.id) || {};
-        
+   new Promise((resolve,reject) => {
+     let check = produtosSelec.length;
+    produtosSelec.forEach((produto) => {
+      // debugger
+      let docEntRef =  firestore()
+                      .collection('empresas')
+                      .doc(empresaEntrada.id)
+                      .collection('produtosVinculados')
+                      .doc(produto.id);
+      
+      if(empresaSaida.id !== '') {
         let docSaiRef = 
-                        firestore()
-                        .collection('empresas')
-                        .doc(empresaSaida.nome)
-                        .collection('produtosVinculados')
-                        .doc(doc.id) || {};
-
-                        batch.update(docSaiRef, {quantidade: (docSaiRef.quantidade) - doc.qtdSelecionada})
-        
+                      firestore()
+                      .collection('empresas')
+                      .doc(empresaSaida.nome)
+                      .collection('produtosVinculados')
+                      .doc(produto.id);
+  
+  
+      docSaiRef.get().then(function(doc) {
+        if(doc.exists) {
+          batch.update(docSaiRef, {quantidade: firebase.firestore.FieldValue.increment(-produto.qtdSelecionada)});
+        }
+      })
+      }
+      
+      docEntRef.get().then(async function(doc) {
+        // debugger
+        if (doc.exists) {
+          batch.update(docEntRef, {quantidade: firebase.firestore.FieldValue.increment(produto.qtdSelecionada)});
+        } else {
+          await firebase.firestore().collection('empresas').doc(empresaEntrada.id).collection('produtosVinculados').doc(produto.id).set({
+            categoria: produto.categoria,
+            descricao: produto.descricao,
+            nome: produto.nome,
+            quantidade: produto.qtdSelecionada,
+            valor: produto.valor
+          })
+        }
+        check--;
+        if(check === 0) {
+          resolve();
+        }
       })
       
+
+    })
     
+   
+  }).then(() => {
+    batch.commit().then(async function () {
+      await firestore().collection('relatorios').add({
+        empresaEntrada: {
+          nome: empresaEntrada.nome,
+          id: empresaEntrada.id
+        },
+        empresaSaida: {
+          nome: empresaSaida.nome,
+          id: empresaSaida.id
+        },
+        dataEntrega: dataEntrega.toLocaleDateString('pt-BR'),
+        dataRealizada: new Date().toLocaleDateString('pt-BR'),
+        descricao: descricao,
+        produtos : produtosSelec
+      }).then(() => {
+        console.log('sucess relatorio')
+      })
+        .catch((error) => {
+          console.log('error relatorio', error)
+        });
+    }).catch((error) => {
+      console.log('algo deu errado no batch', error)
+    })
+  }).catch((error) => console.log("error promise", error))
+  
+ 
     
+
+  
 };
 
 const addProduto = () => {
@@ -115,8 +154,6 @@ const addProduto = () => {
     setProdutosSelec(produtosSelec.filter((item) => (item.id === produto.id ? item.qtdSelecionada = qtdSelecionada : item)))
   }
   // [...produtosSelec, {...produto, qtdSelecionada: qtdSelecionada}]
-  
-  
 }
 
 
@@ -179,7 +216,7 @@ useEffect(() => {
           type="number" 
           inputProps={{max:produto.quantidade || 0, min:0}} 
           defaultValue={0}
-          onChange={(number) => setQtdSelecionada(number.target.value)}
+          onChange={(number) => setQtdSelecionada(number.target.valueAsNumber)}
         />
         <p>Max: {produto.quantidade > 0 ? produto.quantidade : "N/A"}</p>
         <button onClick={addProduto}>Adicionar</button>

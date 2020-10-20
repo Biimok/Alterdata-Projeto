@@ -1,15 +1,15 @@
 import React from 'react';
 import { useAuth } from '../../hooks/auth';
-
-
 import {
    AppBar,
    Toolbar,
-   Button
+   Button,
+   Avatar
 }
 from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { Nav } from './styles';
+import logo from '../../assets/logo_menu.png';
 
 export default function Menu() {
    const { signOut } = useAuth();
@@ -19,13 +19,15 @@ export default function Menu() {
     <div className="root">
       <AppBar className = "header" position="static">
         <Toolbar>
-          <Link className = "link" to="http://localhost:3000/"></Link>
+        <Avatar className = "avatar">
+        <img className = "logo" src={logo} alt="logo"/>
+        </Avatar>
           <Link className = "link" to="/dashboard">Dashboard</Link>
           <Link className = "link" to="/cadastro/produto">Cadastro de produto</Link>
           <Link className = "link" to="/cadastro/empresa">Cadastro de Empresas</Link>
-          <Link className = "link" to="/relatorios">Relatórios</Link>
+          <Link className = "link" to="/relatorio">Relatórios</Link>
           <Link className = "link" to="/transferencia">Transferências</Link>
-          <Button  onClick={signOut}>
+          <Button  className = "link" onClick={signOut}>
            Sair
           </Button>
 

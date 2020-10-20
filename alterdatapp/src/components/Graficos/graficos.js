@@ -1,21 +1,19 @@
-import { Chart } from "react-google-charts";
 import React from 'react';
-
-
-// import { Container } from './styles';
+import { Chart } from "react-google-charts";
+import { Grid, Container } from '@material-ui/core'
 import { GrafStyle } from './styles';
 
 function Graficos() {
-  
   return (
-   
-<GrafStyle className="grafBarra">
 
-      <div style = {{display: 'flex'}}>
-        
-        <Chart
-          width={720}
-          height={400}
+<GrafStyle>
+  <Container fixed>
+  <div className="root">
+   <Grid container spacing={3}>
+   <Grid item xs={6}>
+   <Chart className= "border"
+          width={650}
+          height={360}
           chartType = "BarChart"
           loader={<div> Gerando  Gráficos... </div>}
           data= {[
@@ -33,26 +31,25 @@ function Graficos() {
           ]}
 
           options={{
-            title: 'Gráfico de Movimentação',
-            chartArea: { width: '40%'},
-            hAxis: {
-              title: 'Movimentações',
-              minValue: 0
+          title: 'Gráfico de Movimentação',
+          chartArea: { width: '40%'},
+          hAxis: {
+            title: 'Movimentações',
+            minValue: 0
             },
-            vAxis: {
-              title: 'Empresas',
+          vAxis: {
+            title: 'Empresas',
             },
           }}
           />
-       
-
-             
-             <Chart className="grafPizza"
-               //720px x 400 px
-               width={'720px'}
-               height={'400px'}
-               chartType="PieChart"
-               data={[
+         
+    </Grid>
+    <Grid item xs={6}>
+    <Chart className= "border"
+           width={630}
+           height={360}
+           chartType="PieChart"
+           data={[
                  ['Empresa', 'Qntd.Produtos'],
                  ['A',            2000],
                  ['B',            5000],
@@ -65,22 +62,18 @@ function Graficos() {
                  ['I',            2750]
                ]}
                options={{
-                 title: 'Estoque',
-                 is3D: true,
+               title: 'Estoque',
+               is3D: true,
                }}
                rootProps={{ 'data-testid': '7' }}
              />
-          
-        </div>
-        
-        <div  style = {{display: 'flex'}}>
-
-          <Chart className="grafLinha"
-          //600 400
-            width={'620px'}
-            height={'400px'}
-            chartType="LineChart"
-            data={[
+    </Grid>
+    <Grid item xs={12}>
+    <Chart className= "border"
+          width={650}
+          height={360}
+          chartType="LineChart"
+          data={[
               ['Dia', 'Movimentação'],
               [1,           0],
               [2,         110],
@@ -115,23 +108,20 @@ function Graficos() {
             ]}
             options={{
               hAxis: {
-                title: 'Movimento dos últimos 30 dias',
+              title: 'Movimento dos últimos 30 dias',
               },
               vAxis: {
-                title: 'Movimentação',
+              title: 'Movimentação',
               },
             }}
             rootProps={{ 'data-testid': '1' }}
           />
-        </div>
-    
-            
-    
+ </Grid>
+ </Grid>
+ </div>
+ </Container>
  </GrafStyle>
-
   )
 }
 
 export default Graficos;
-
-

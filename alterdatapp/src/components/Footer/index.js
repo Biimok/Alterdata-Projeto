@@ -1,26 +1,24 @@
 import React from 'react';
-import { 
-    CssBaseline,
-    Container,
-    Typography
-  }
-from '@material-ui/core';
-import { Fot } from './styles';
-   
-export default function Footer() {
-return (
-  <Fot className="root">
-   <div>
-    <CssBaseline />
-      <Container component="main" className="main" maxWidth="sm">
-        <Typography className="texto">
-           Bimmer 2
-        </Typography>
-      </Container>
-    <footer className="footer">
-  </footer>
- </div>
+import Typography from '@material-ui/core/Typography';
+import Container from '@material-ui/core/Container';
+import { Fot } from './styles'
 
-</Fot>
-    );
-  }
+
+export default function Footer() {
+  
+
+  return (
+    <Fot>
+    <div className="root">
+      <footer className="footer">
+        <Container maxWidth="sm">
+          <Typography className="texto" >Bimmer 2</Typography>
+        </Container>
+      </footer>
+    </div>
+    </Fot>
+  );
+}
+
+  
+  

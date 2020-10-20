@@ -1,66 +1,61 @@
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import Menu from '../../components/Menu';
+import { Form } from '@unform/web';
+import Input from '../../components/Form/input';
+import * as Yup from 'yup';
 
 // import { Container } from './styles';
 
 function CadastroProduto() {
-  const [nome, setNome] = useState('');
-  const [valor, setValor] = useState('');
-  const [quantidade, setQuantidade] = useState(null);
-  const [categoria, setCategoria] = useState('');
-  const [descricao, setDescricao] = useState('');
+  const formRef = useRef(null);
 
-  const setProduto = async () => {
-    
-    if (nome === '' || valor === '' || quantidade === null || categoria === '' || descricao === '') {
-      return console.log('Preencha os campos obrigatórios');
-    }
+  const setProduto = async (data, { reset }) => {
 
     try {
-      await firebase.firestore().collection('produtos').add({
-        nome: nome,
-        valor: valor,
-        quantidade: quantidade,
-        categoria: categoria,
-        descricao: descricao
-      })
-      
-      setNome('');
-      setValor('');
-      setQuantidade('');
-      setCategoria('');
-      setDescricao('');
 
+      const schema = Yup.object().shape({
+        nome: Yup.string().lowercase().required(),
+        valor: Yup.number().required(),
+        quantidade: Yup.number().required(),
+        categoria: Yup.string().lowercase().required(),
+        descricao: Yup.string().lowercase().required()
+      });
+
+      await schema.validate(data, {
+        abortEarly: false,
+      });
+
+      console.log(data);
+
+
+      await firebase.firestore().collection('produtos').add({
+        nome: data.nome,
+        valor: data.valor,
+        quantidade: data.quantidade,
+        categoria: data.categoria,
+        descricao: data.descricao
+      })
+
+      reset();
+      
     } catch(error) {
       console.log('error setProduto', error);
-    }
+    } 
   };
-
-
-
-
-
-
-
-
 
   return (
     <>
       <Menu/>
-      <form onSubmit={setProduto}>
-        <input type="text" name="nome" placeholder="Nome" value={nome} onChange={(text) => setNome(text.target.value)}></input>
-        <input type="number" name="valor" placeholder="Valor" value={valor} onChange={(text) => setValor(text.target.value)}></input>
-        <input type="number" name="quantidade" placeholder="Quantidade" value={quantidade} onChange={(text) => setQuantidade(text.target.value)}></input>
-        <input type="text" name="categoria" placeholder="Categoria" value={categoria} onChange={(text) => setCategoria(text.target.value)}></input>
-        <input type="text" name="descricao" placeholder="Descrição" value={descricao} onChange={(text) => setDescricao(text.target.value)}></input>
+      <Form onSubmit={setProduto} ref={formRef}>
+        <Input type="text" name="nome" placeholder="Nome"/>
+        <Input type="number" name="valor" placeholder="Valor"/>
+        <Input type="number" name="quantidade" placeholder="Quantidade"/>
+        <Input type="text" name="categoria" placeholder="Categoria"/>
+        <Input type="text" name="descricao" placeholder="Descrição"/>
         <button type="submit" >Cadastrar</button>
-      </form>
-
-
-
-
+      </Form>
     </>
   )
 }
