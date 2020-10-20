@@ -7,15 +7,15 @@ import {
   Button,
   CssBaseline,
   TextField,
-  FormControlLabel,
-  Checkbox,
+  InputAdornment,
   Link,
   Grid,
   Box,
   Container
 }
 from '@material-ui/core';
-
+import Email from '@material-ui/icons/Email';
+import Lock from '@material-ui/icons/Lock';
 import logo from "../../assets/logo.png";
 import { Wrap } from "./styles";
 
@@ -73,6 +73,14 @@ function Login() {
                 autoFocus
                 value={email}
                 onChange={(text) => setEmail(text.target.value)}
+              
+                InputProps={{
+                startAdornment: (
+                <InputAdornment position="start">
+                <Email />
+                </InputAdornment>
+              ),
+              }}
               />
               <TextField 
                 variant="outlined"
@@ -85,8 +93,15 @@ function Login() {
                 id="password"
                 value={password}
                 onChange={(text) => setPassword(text.target.value)}
-              />
-            
+             
+                InputProps={{
+                startAdornment: (
+                <InputAdornment position="start">
+                <Lock />
+                </InputAdornment>
+                ),
+                }}
+                />
               <Button
                 type="submit"
                 fullWidth

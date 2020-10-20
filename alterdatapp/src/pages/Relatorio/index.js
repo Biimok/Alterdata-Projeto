@@ -5,6 +5,7 @@ import Grid from '@material-ui/core/Grid';
 import { Container } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '../../components/Menu';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -106,6 +107,9 @@ export default function Relatorio() {
 
 // aqui estou fazendo o teste com o map para as empresas
   return (
+
+
+    
     <Container fixed>
         <Grid container spacing={3}>
             <Grid item xs={6}>

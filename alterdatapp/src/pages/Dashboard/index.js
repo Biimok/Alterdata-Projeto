@@ -2,12 +2,13 @@ import React, { useCallback, useEffect, useState } from 'react';
 import Grafico from '../../components/Graficos/graficos';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
-import { useAuth } from '../../hooks/auth';
+import Menu from '../../components/Menu';
+import Footer from '../../components/Footer';
+import { Grid } from '@material-ui/core';
 // import { Container } from './styles';
 
 function Dashboard() {
 
-const { signOut } = useAuth();
 
 const [ listaEmpresas, setListaEmpresas ] = useState([]);
 const [ qtdProdutos, setQtdProdutos ] = useState(null);
@@ -22,7 +23,7 @@ const getEmpresas = useCallback(async () => {
     response.forEach(doc => {
       temp.push({id: doc.id, ...doc.data()});
     })
-
+    console.log(temp, "getempresas")
     setListaEmpresas(temp);
   } catch (error) {
     console.log('error getEmpresas', error);
@@ -31,36 +32,41 @@ const getEmpresas = useCallback(async () => {
 
 const getProdutos = useCallback(async () => {
   try {
-    const response = await firebase.firestore().collectionGroup('produtos').get();
+    const response = await firebase.firestore().collection('produtos').get();
+    const temp = [];
+    response.forEach(doc => {
+      temp.push({id: doc.id, ...doc.data()});
+    })
 
-    const temp = response.length - 1;
-
-
-    setQtdProdutos(temp);
+    console.log(temp, "getprodutos")
+    setQtdProdutos(temp.length);
   } catch (error) {
     console.log('error getProdutos', error);
   }
 },[]);
 
 const getRelatorios = useCallback(async () => {
+  
   try {
     const response = await firebase.firestore().collection('relatorios').get();
-
-    listaEmpresas.map((empresa) => {
+    listaEmpresas.map(empresa => {
       let temp = {nomeEmpresa: '', produtos: 0, quantidade: 0};
-
       response.forEach(doc => {
         const data = doc.data();
-        if (data.empresa.id === empresa.id) {
+        if (data.id === empresa.id) {
           temp = {nomeEmpresa: empresa.nome, produtos: empresa.produtosVinculados.length-1, quantidade: temp.quantidade + (data.produtos.length -1)}
         }
       })
-      setQtdRelatorios([...qtdRelatorios, temp]);
+     
+      return setQtdRelatorios([...qtdRelatorios, temp]);
     })
+    
   } catch (error) {
     console.log('error getRelatorios', error);
+  } finally {
+    console.log('caiu')
   }
-},[listaEmpresas, qtdRelatorios]);
+},[]);
 
 useEffect(() => {
   getEmpresas();
@@ -68,12 +74,13 @@ useEffect(() => {
   getRelatorios();
 },[])
 
-
   return (
-    <>
-    <button onClick={signOut}>SAIR</button>
+    <Grid>
+    <Menu/>
+    <p>{qtdProdutos}</p>
     <Grafico/>
-    </>
+    <Footer/>
+    </Grid>
   );
 }
 

@@ -5,7 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import './services/firebase';
 
 import Routes from './routes';
-import AppProvider from './hooks/index';
+import AppProvider from './hooks';
 
 function App() {
   return (

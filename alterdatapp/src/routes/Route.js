@@ -12,7 +12,6 @@ const Route = ({
   ...rest
 }) => {
   const { user } = useAuth();
-
   return (
     <ReactDOMRoute
       {...rest}

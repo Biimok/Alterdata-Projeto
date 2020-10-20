@@ -27,6 +27,8 @@ export const Wrap = styled.div`
 
   .submit {
     margin: 3px 0px 2px 0px;
+    background-color:  rgb(15, 152, 171);
+    color: white;
   }
 
   .espaco {
@@ -49,5 +51,5 @@ export const Wrap = styled.div`
   #password {
     height: 10px;
   }
-`;
+`
                                                                                                   
