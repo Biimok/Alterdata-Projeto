@@ -2,9 +2,13 @@ import styled from 'styled-components';
 
 
 export const Wrap = styled.div`
-  display:flex;
-  height:100vh;
-  align-items:center;
+display: flex;
+
+.form {
+  border-radius: 20px;
+}
+
+
 
   .paper {
     margin-top: 8px;
@@ -15,24 +19,16 @@ export const Wrap = styled.div`
 
   .avatar {
     display: flex;
-    margin: 1px;
     width: 185px;
     height: 185px;
   }
 
-  .form {
-    width:100%;
-    margin-top: 1px;
-  }
-
-  .submit {
-    margin: 3px 0px 2px 0px;
-    background-color:  rgb(15, 152, 171);
-    color: white;
-  }
-
   .espaco {
-    padding: 12px 20px;
+    padding: 20px 20px;
+   
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .logo {
@@ -40,16 +36,24 @@ export const Wrap = styled.div`
   }
 
   .bloco {
-    padding: 12px;
     background-color:#E6E6E6;
+    border-radius: 10px;
+    padding: 20px;
+    width: 400px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 
   #email {
     height: 10px;
+    width: 230px;
   }
 
   #password {
     height: 10px;
+    width: 230px;
   }
 `
                                                                                                   

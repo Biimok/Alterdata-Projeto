@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useField } from '@unform/core';
+import { TextField } from '@material-ui/core';
 
 export default function Input({ name, ...rest }) {
   const inputRef = useRef(null);
@@ -13,5 +14,12 @@ export default function Input({ name, ...rest }) {
     });
   }, [fieldName, registerField]);
 
-  return <input ref={inputRef} defaultValue={defaultValue} {...rest} />;
+  return <TextField 
+          inputRef={inputRef} 
+          defaultValue={defaultValue}
+          variant="outlined"
+          margin="normal"
+          autoFocus
+          {...rest} 
+          />;
 }

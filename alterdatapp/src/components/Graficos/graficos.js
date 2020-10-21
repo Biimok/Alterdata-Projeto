@@ -1,34 +1,105 @@
-import React from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Chart } from "react-google-charts";
 import { Grid, Container } from '@material-ui/core'
 import { GrafStyle } from './styles';
+import firebase from 'firebase/app';
+import 'firebase/firestore';
+import { date } from 'yup';
 
 function Graficos() {
+  const [listaEmpresas, setListaEmpresas] = useState([]);
+  const [barData, setBarData] = useState([]);
+  const [pieData, setPieData] = useState([]);
+  const [dia, setDia] = useState(`${new Date().getDate()}-${new Date().getMonth()}-${new Date().getFullYear()}`);
+
+  const getEmpresas = useCallback(async () => {
+    try {
+      console.log(dia);
+      const response = await firebase.firestore().collection('empresas').get();
+
+      const finalArray = [['Empresa', 'QtdProduto']];
+      const temp = [];
+      response.forEach(async doc => {
+        let countP = 0;
+        const responseP = await firebase.firestore().collection('empresas').doc(doc.id).collection('produtosVinculados').get();
+        responseP.forEach(prod => countP = countP + prod.data().quantidade)
+        temp.push({id: doc.id, ...doc.data(), produtosVinculados: responseP.size});
+        finalArray.push([doc.data().nome, countP]);
+      })
+      setListaEmpresas(temp);
+      setPieData(finalArray)
+      getRelatoriosFull(temp);
+    } catch (error) {
+      console.log('error getEmpresas', error);
+    }
+  }, []);
+
+  const getRelatoriosFull = async (lista) => {
+    const relatRef = firebase.firestore().collection('relatorios');
+    try {
+      const responseFull = await relatRef.get();
+      const responseFilter = await relatRef.where("dataRealizada", ">=", dia).orderBy("dataRealizada", "asc").get();
+      
+
+      const finalArray = [['Empresa', 'Em estoque', 'Movimentado']]
+      lista.map(empresa => {
+        let temp = [];
+        let count = 0;
+        responseFull.forEach(doc => {
+          const data = doc.data();
+          if (data.empresaEntrada.id === empresa.id || data.empresaSaida.id === empresa.id) {
+            count++;
+            temp = [empresa.nome, empresa.produtosVinculados, count]
+          }
+        })
+        finalArray.push(temp); 
+      })
+      setBarData(finalArray);
+      getRelatoriosFilter(responseFilter);
+      
+    } catch (error) {
+      console.log('error getRelatorios', error);
+    }
+  };
+
+  const getRelatoriosFilter = (response) => {
+    const lista = [];
+    const data = [];
+
+    response.forEach(doc => {
+      lista.push({id: doc.id, ...doc.data()});
+    });
+
+      /*
+        0:
+          dataEntrega: "10/11/1111"
+          dataRealizada: "21/10/2020"
+          descricao: ""
+          empresaEntrada: {id: "Estoque", nome: "estoque"}
+          empresaSaida: {id: "", nome: ""}
+          id: "0vdeX2mVlit4gb46FrIX"
+          produtos: (2) [{…}, {…}] 
+      */
+
+  }
+
+  useEffect(() => {
+    getEmpresas();
+  }, [getEmpresas])
+
   return (
 
 <GrafStyle>
   <Container fixed>
   <div className="root">
-   <Grid container spacing={3}>
-   <Grid item xs={6}>
+   <Grid container spacing={2}>
+   <Grid item xs={12} sm={6}>
    <Chart className= "border"
-          width={650}
+          width={600}
           height={360}
           chartType = "BarChart"
-          loader={<div> Gerando  Gráficos... </div>}
-          data= {[
-            ['Empresa', 'Em estoque', 'Movimentado'],
-            ['empresa A',   2000,          250],
-            ['empresa B',   5000,          900 ],
-            ['empresa C',   4200,          3000],
-            ['empresa D',   9000,          7500],
-            ['empresa E',   2500,          550 ],
-            ['empresa F',   1260,          490],
-            ['empresa G',   1242,          250],
-            ['empresa H',   650,          900 ],
-            ['empresa I',   2750,          1500],
-
-          ]}
+          //loader={<div> Gerando  Gráficos... </div>}
+          data= {barData}
 
           options={{
           title: 'Gráfico de Movimentação',
@@ -44,33 +115,51 @@ function Graficos() {
           />
          
     </Grid>
-    <Grid item xs={6}>
+    <Grid item xs={12} sm={6}>
     <Chart className= "border"
-           width={630}
+           width={600}
            height={360}
            chartType="PieChart"
-           data={[
-                 ['Empresa', 'Qntd.Produtos'],
-                 ['A',            2000],
-                 ['B',            5000],
-                 ['C',            4200],
-                 ['D',            9000], 
-                 ['E',             2500], 
-                 ['F',            1260],
-                 ['G',            1242],
-                 ['H',            650],
-                 ['I',            2750]
-               ]}
+           data={pieData}
                options={{
                title: 'Estoque',
-               is3D: true,
+               pieHole: 0.4,
+               pieSliceTextStyle: {
+                color: 'black',
+              },
                }}
                rootProps={{ 'data-testid': '7' }}
+
+               //Problema com o Grid resolvido, preciso ainda  reposicionar o elemento na tela
+
+               chartPackages={['corechart', 'controls']}
+               controls={[
+                 {
+                   controlEvents: [
+                     {
+                       eventName: 'statechange',
+                       callback: ({ chartWrapper, controlWrapper }) => {
+                       },
+                     },
+                   ],
+                   controlType: 'CategoryFilter',
+                   options: {
+                     filterColumnIndex: 0,
+                     ui: {
+                       labelStacking: 'vertical',
+                       label: 'Filtrar Empresa:',
+                       //allowTyping: false,
+                       allowMultiple: true,
+                     },
+                   },
+                 },
+               ]}
+
              />
     </Grid>
     <Grid item xs={12}>
     <Chart className= "border"
-          width={650}
+          width={600}
           height={360}
           chartType="LineChart"
           data={[

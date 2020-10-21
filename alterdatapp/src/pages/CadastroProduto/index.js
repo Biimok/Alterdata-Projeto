@@ -5,6 +5,12 @@ import Menu from '../../components/Menu';
 import { Form } from '@unform/web';
 import Input from '../../components/Form/input';
 import * as Yup from 'yup';
+import Button from '../../components/Button';
+import { Formul } from './styles';
+
+
+
+
 
 // import { Container } from './styles';
 
@@ -18,7 +24,6 @@ function CadastroProduto() {
       const schema = Yup.object().shape({
         nome: Yup.string().lowercase().required(),
         valor: Yup.number().required(),
-        quantidade: Yup.number().required(),
         categoria: Yup.string().lowercase().required(),
         descricao: Yup.string().lowercase().required()
       });
@@ -27,13 +32,11 @@ function CadastroProduto() {
         abortEarly: false,
       });
 
-      console.log(data);
 
 
       await firebase.firestore().collection('produtos').add({
         nome: data.nome,
         valor: data.valor,
-        quantidade: data.quantidade,
         categoria: data.categoria,
         descricao: data.descricao
       })
@@ -48,16 +51,31 @@ function CadastroProduto() {
   return (
     <>
       <Menu/>
+      <Formul>
       <Form onSubmit={setProduto} ref={formRef}>
-        <Input type="text" name="nome" placeholder="Nome"/>
-        <Input type="number" name="valor" placeholder="Valor"/>
-        <Input type="number" name="quantidade" placeholder="Quantidade"/>
-        <Input type="text" name="categoria" placeholder="Categoria"/>
-        <Input type="text" name="descricao" placeholder="Descrição"/>
-        <button type="submit" >Cadastrar</button>
+        <div className = "campos">
+        <Input id="campoMaior" type="text" name="nome" label="Nome"/>
+        </div>
+        <div className = "campos">
+        <Input id="campoMaior" type="number" name="valor" label="Valor"/>
+        </div>
+        <div className = "campos">
+        <Input id="campoMaior" type="text" name="categoria" label="Categoria"/>
+        </div>
+        <div className = "campos">
+        <Input id="campoDescricao" type="text" name="descricao" label="Descrição" multiline
+          rows={4}/>
+        </div>
+        <div className = "campos">
+        <Button>Cancelar</Button>
+        <Button type="submit">Cadastrar</Button>
+        </div>
       </Form>
+      </Formul>
     </>
   )
 }
 
 export default CadastroProduto;
+
+

@@ -4,6 +4,7 @@ export const Fot = styled.div`
 .root {
 display: flex;
 flex-direction: column;
+padding-top: 12px;
 }
 
 .main {

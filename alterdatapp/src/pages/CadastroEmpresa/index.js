@@ -5,6 +5,7 @@ import Menu from '../../components/Menu';
 import { Form } from '@unform/web';
 import Input from '../../components/Form/input';
 import * as Yup from 'yup';
+import Button from '../../components/Button';
 
 // import { Container } from './styles';
 
@@ -43,10 +44,12 @@ function CadastroEmpresa() {
     <>
       <Menu/>
       <Form ref={formRef} onSubmit={setEmpresa}>
-        <Input type="text" name="nome" placeholder="Nome" />
-        <Input type="text" name="cnpj" placeholder="Cnpj" />
-        <Input type="text" name="ramo" placeholder="Ramo" />
-       <button type="submit" >Cadastrar</button>
+        <Input type="text" name="nome" label="Nome" />
+        <Input type="text" name="cnpj" label="Cnpj"/>
+        <Input type="text" name="ramo" label="Ramo"/>
+        <Button>Cancelar</Button>
+        <Button type="submit" >Cadastrar</Button>
+       
       </Form>
 
 

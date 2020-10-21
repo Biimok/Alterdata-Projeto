@@ -4,7 +4,8 @@ import {
    AppBar,
    Toolbar,
    Button,
-   Avatar
+   Avatar,
+   Grid
 }
 from '@material-ui/core';
 import { Link } from 'react-router-dom';
@@ -16,6 +17,7 @@ export default function Menu() {
 
   return (
     <Nav>
+    <Grid container spacing={1}>
     <div className="root">
       <AppBar className = "header" position="static">
         <Toolbar>
@@ -27,13 +29,13 @@ export default function Menu() {
           <Link className = "link" to="/cadastro/empresa">Cadastro de Empresas</Link>
           <Link className = "link" to="/relatorio">Relatórios</Link>
           <Link className = "link" to="/transferencia">Transferências</Link>
-          <Button  className = "link" onClick={signOut}>
-           Sair
+          <Button className = "botao" onClick={signOut}>
+           sair
           </Button>
-
         </Toolbar>
       </AppBar>
     </div>
+    </Grid>
     </Nav>
   );
 }

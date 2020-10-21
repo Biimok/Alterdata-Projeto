@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const Nav = styled.div`
 display: flex;
 flex-direction: column;  
-justify-content: center; 
+padding-bottom: 12px;
 
 .root {
 flex-Grow: 1;
@@ -18,8 +18,9 @@ display: block;
 color: white;
 font-size: 13px;
 text-align: center;
-padding: 8px 8px;
+padding: 6px 6px;
 text-decoration: none;
+font-family: arial;
 }
 
 .header {
@@ -35,6 +36,16 @@ display: flex;
 margin: 1px;
 width: 40px;
 height: 40px;
-    }
+}
+
+.botao {
+text-transform: capitalize;
+display: block;
+color: white;
+font-size: 13px;
+padding: 6px 6px;
+text-decoration: none;
+font-family: arial;
+}
 
 `

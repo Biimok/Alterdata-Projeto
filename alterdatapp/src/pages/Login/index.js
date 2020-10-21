@@ -1,131 +1,113 @@
 import React, { useState } from "react";
 import { useAuth } from "../../hooks/auth";
-import { useHistory } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
+import Button from '../../components/Button';
+import Input from '../../components/Form/input';
+import { Form } from '@unform/web';
+import * as Yup from 'yup';
 
-import { 
-  Avatar, 
-  Button,
+import {
+  Avatar,
   CssBaseline,
-  TextField,
   InputAdornment,
   Link,
   Grid,
   Box,
-  Container
-}
-from '@material-ui/core';
-import Email from '@material-ui/icons/Email';
-import Lock from '@material-ui/icons/Lock';
+  Container,
+} from "@material-ui/core";
+import Email from "@material-ui/icons/Email";
+import Lock from "@material-ui/icons/Lock";
 import logo from "../../assets/logo.png";
 import { Wrap } from "./styles";
 
 function Login() {
   const history = useHistory();
   const { signIn } = useAuth();
+  const [loading, setLoading] = useState(false);
 
-  const [ email, setEmail ] = useState("");
-  const [ password, setPassword ] = useState("");
-  const [ loading, setLoading ] = useState(false);
+  async function handleSubmit(data) {
+    
+    const schema = Yup.object().shape({
+      email: Yup.string().required(),
+      password: Yup.string().required(),
+      
+    });
 
-  async function handleSubmit() {
-    if(!email) return;
-    if(!password) return;
+    await schema.validate(data, {
+      abortEarly: false,
+    });
 
     setLoading(true);
 
-    console.log(email, password)
-
     try {
       await signIn({
-        email: email,
-        password: password
+        email: data.email,
+        password: data.password,
       });
 
-      history.push('/dashboard');
-
-    } catch(error) {
-      console.log('error handleSubmit', error);
-      console.log('usuario ou senha não confere');
+      history.push("/dashboard");
+    } catch (error) {
+      console.log("error handleSubmit", error);
+      console.log("usuario ou senha não confere");
     } finally {
       setLoading(false);
     }
   }
 
   return (
+    <>
       <Wrap>
-        <Container className = "bloco" component="main" maxWidth="xs">
-          <form className="form" onSubmit={handleSubmit}>
-            <div className = "espaco">
-            <CssBaseline  />
-            <div className="paper">
-              <Avatar className="avatar">
-                <img className = "logo" src={logo} alt="personagem login" />
-              </Avatar>
+        <Container className="bloco" component="main" maxWidth="xs">
+    
+          <Form className = "form" onSubmit={handleSubmit}>
+           <div className="espaco">
+              <div className="paper">
+                <Avatar className="avatar">
+                  <img className="logo" src={logo} alt="personagem login" />
+                </Avatar>
 
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Endereço de e-mail"
-                name="email"
-                autoFocus
-                value={email}
-                onChange={(text) => setEmail(text.target.value)}
-              
-                InputProps={{
-                startAdornment: (
-                <InputAdornment position="start">
-                <Email />
-                </InputAdornment>
-              ),
-              }}
-              />
-              <TextField 
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Senha"
-                type="password"
-                id="password"
-                value={password}
-                onChange={(text) => setPassword(text.target.value)}
-             
-                InputProps={{
-                startAdornment: (
-                <InputAdornment position="start">
-                <Lock />
-                </InputAdornment>
-                ),
-                }}
+                <Input
+                  required
+                  id="email"
+                  label="Endereço de e-mail"
+                  name="email"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Email />
+                      </InputAdornment>
+                    ),
+                  }}
                 />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                className="submit"
-              >
-                {loading ? 'Carregando...' : 'Entrar'}
-              </Button>
-              <Grid container>
-                <Grid item xs>
-                  <Link href="#" variant="body2">
-                    Esqueceu sua senha?
-                  </Link>
-                </Grid>
-                <Grid item></Grid>
-              </Grid>
-            </div>
-            <Box mt={8}></Box>
-            </div>
-          </form>
+                <Input
+                  required
+                  name="password"
+                  label="Senha"
+                  type="password"
+                  id="password"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Lock />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                >
+                  {loading ? "Carregando..." : "Entrar"}
+                </Button>
+                
+              </div>
+              </div>
+          </Form>
+         
         </Container>
       </Wrap>
-   
+    </>
   );
 }
 

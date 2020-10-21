@@ -71,16 +71,16 @@ const upRelatorios = () => {
         let docSaiRef = 
                       firestore()
                       .collection('empresas')
-                      .doc(empresaSaida.nome)
+                      .doc(empresaSaida.id)
                       .collection('produtosVinculados')
                       .doc(produto.id);
   
   
-      docSaiRef.get().then(function(doc) {
-        if(doc.exists) {
-          batch.update(docSaiRef, {quantidade: firebase.firestore.FieldValue.increment(-produto.qtdSelecionada)});
-        }
-      })
+        docSaiRef.get().then(function(doc) {
+          if(doc.exists) {
+            batch.update(docSaiRef, {quantidade: firebase.firestore.FieldValue.increment(-produto.qtdSelecionada)});
+          }
+        })
       }
       
       docEntRef.get().then(async function(doc) {
@@ -122,7 +122,7 @@ const upRelatorios = () => {
         descricao: descricao,
         produtos : produtosSelec
       }).then(() => {
-        console.log('sucess relatorio')
+        console.log('success relatorio')
       })
         .catch((error) => {
           console.log('error relatorio', error)
@@ -153,7 +153,6 @@ const addProduto = () => {
   } else {
     setProdutosSelec(produtosSelec.filter((item) => (item.id === produto.id ? item.qtdSelecionada = qtdSelecionada : item)))
   }
-  // [...produtosSelec, {...produto, qtdSelecionada: qtdSelecionada}]
 }
 
 
@@ -163,9 +162,6 @@ useEffect(() => {
   getProdutos();
 },[getEmpresas, getProdutos])
 
-// const selecProduto = (produto, quantidade) => {
-//   setProdutosSelec([...produtosSelec, {nome: produto.nome, id: produto.id, quantidade: quantidade}])
-// }
 
   return (
     <Transf>
@@ -214,7 +210,8 @@ useEffect(() => {
         />
         <TextField 
           type="number" 
-          inputProps={{max:produto.quantidade || 0, min:0}} 
+          inputProps={{ min:0}} 
+          // max:produto.quantidade || 0,
           defaultValue={0}
           onChange={(number) => setQtdSelecionada(number.target.valueAsNumber)}
         />

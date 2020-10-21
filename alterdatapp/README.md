@@ -1,68 +1,52 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<img src="./assets/readme.png" width="400">
 
-## Available Scripts
 
-In the project directory, you can run:
+<h1 align="center">Controle de Estoque Bimer 2!</h1>
+ <p align="center"> <strong> Bimer 2 é a maneira mais prática de organizar e gerenciar seu estoque!</strong></p>
 
-### `yarn start`
+<p align="center">
+  <a href="#-descrição">Descrição</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+  <a href="#-instalação-e-execução">Instalação e execução</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+  <a href="#memo-licença">Licença</a>
+</p>
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## ✍ Descrição
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+<strong> BIMER 2 </strong> é um sistema desenvolvido pelos alunos da Residência de Software do SERRATEC como projeto final do curso. O sistema  possui algumas funcionabilidades como: login, cadastro de produtos e empresas, transferência de produtos entre as empresas e geração de relatórios. 
 
-### `yarn test`
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+ ## 💻 Instalação e execução
+ 
+<strong> Passo 1 > </strong> <i> Você deve ter instalado no seu computador o <strong> Git  </strong>. <a href="https://git-scm.com/"> Clique aqui </a></i><br>
+<strong> Passo 2 > </strong> <i> Outra ferramenta necessária que vamos utilizar é o <strong> Node.Js </strong>. <a href="https://nodejs.org/en/"> Clique aqui </a></i><br>
+<strong> Passo 3 > </strong> <i> Após a instalação das ferramentas você deve abrir o terminal do seu computador. </i><br>
+<strong> Passo 4 > </strong> <i> Altere o diretório de trabalho atual para o local em que deseja salvar. (exemplo: cd desktop). </i><br>
+<strong> Passo 5 > </strong> <i> Faça um clone desse repositório rodando: `git clone https://github.com/Biimok/Alterdata-Projeto` </i><br>
+<strong> Passo 6 > </strong> <i> Depois de clonar o repositório entre na pasta rodando pelo terminal: `cd Alterdata-Projeto` </i><br>
+<strong> Passo 7 > </strong> <i> Digite `npm i` para instalar as dependências do projeto e aguarde. </i><br>
+<strong> Passo 8 > </strong> <i> Digite `yarn start` para iniciar o servidor de desenvolvimento e aguarde a execução.</i><br>
 
-### `yarn build`
+## ⌨ Tecnologia 
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+👉<i> firebase </i><br/>
+👉<i> json-server </i><br/>
+👉<i> @material-ui </i><br/>
+👉<i> react-dom </i><br/>
+👉<i> react-native </i><br/>
+👉<i> react-navigation </i><br/>
+👉<i> styled-components </i><br/>
+👉<i> @testing-library </i><br/>
+👉<i> @unform </i><br/>
+👉<i> yup </i><br/>
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+## 📋 Licença
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Esse projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE.md) para saber mais detalhes.
 
-### `yarn eject`
+## 👩‍💻👨‍💻 Equipe
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `yarn build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+<a href="https://github.com/marquesdouglas542"> Douglas Marques </a> |
+<a href="https://github.com/Biimok"> Jean-Luc Ernest </a> |
+<a href="https://github.com/KARLA-DINIZ"> Karla Diniz </a> |
+<a href="https://github.com/leticiatayt-sohn"> Letícia Tayt-sohn </a> |
+<a href=""> Renan Ribeiro </a> 

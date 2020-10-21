@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
+import GlobalStyles from './styles/global';
 
 
 import './services/firebase';
@@ -15,6 +16,7 @@ function App() {
         <Routes />
       </AppProvider>
     </BrowserRouter>
+    <GlobalStyles />
     </>
     
   );
