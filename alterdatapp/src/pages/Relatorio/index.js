@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -8,10 +8,14 @@ import TableRow from '@material-ui/core/TableRow';
 import {withStyles, makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import { Button, Container } from '@material-ui/core';
+import { Container } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
-import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '../../components/Menu';
+import 'firebase/firestore';
+import firebase from 'firebase/app';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import { Botao } from './styles';
+
 
 
 const useStyles = makeStyles((theme) => ({
@@ -46,201 +50,190 @@ const StyledTableRow = withStyles((theme) => ({
 }))(TableRow);
 
 
+
+
 export default function Relatorio() {
+
+
+  const [empresas, setEmpresas] = useState([]);
+  const [produtosVinculados , setProdutosVinculados] = useState([]);
   
-    const [empresas, setEmpresas] = useState('EUR');
-    const [produtos , setProdutos] = useState('');
+  const pegarEmpresas = useCallback(async () => {
+  
+    try {
+      const resposta = await firebase.firestore().collection('empresas').get();
+      const resp = [];
+  
+      resposta.forEach(doc => {
+        resp.push({id: doc.id, ...doc.data()});
+      })
+  
+      setEmpresas(resp);
+    } catch (error) {
+      console.log('error ao selecionar Empresas', error);
+    }
+  },[]);
 
 
-  const handleChange = (event) => {
-    setEmpresas(event.target.value);
-    };
+  
+  const pegarProdutos = useCallback(async (empresa) => {
+    
+    try {
+      const resposta = await firebase.firestore().collection('empresas').doc(empresa.id).collection('produtosVinculados').get();
+      console.log(resposta)
+  
+      const resp = [];
+  
+      resposta.forEach(doc => {
+        resp.push({id: doc.id, ...doc.data()});
+      })
+  
+      setProdutosVinculados(resp);
+    } catch (error) {
+      console.log('error ao recuperar produtos', error);
+    }
+  },[]);
 
-  const handleChange_ = (event) => {
-    setProdutos(event.target.value);
-    };
+
+  
+  useEffect(() => {
+    pegarEmpresas();
+    pegarProdutos();
+  },[pegarEmpresas, pegarProdutos])
+  
 
 
   function createData(name, produto, quantidade, data) {
     return { name, produto, quantidade, data};
   }
 
-    const listaEmpresa = [
-        {
-          id: '1',
-          nome: 'A',
-        },
-        {
-          id: '2',
-          nome: 'B',
-        },
-        {
-          id: '3',
-          nome: 'C',
-        },
-        {
-          id: '4',
-          nome: 'D',
-        },
-      ];
 
-      const listaProdutos = [
-          {
-              id: '13',
-              nome: 'banana',
-          },
-          {
-              id: '14',
-              nome: 'maça'
-          }
-      ];
+  //função de datas
 
+  // const filtrarRelatorio = async () => {
+  //   try{
+  //     const resposta = await firebase.firestore().collection('produtos').where('data' , 'beetween' , 'dataSelecionada')
+  //   }
+  //   catch (error){
+  //     console.log('error nas datas', error)
+  //   }
+  //      }
+
+  
       //aqui fazer a função que irá trazer as informações do banco de dados
       const rows = [
         createData('A', 'banana', 13, '24/06/2019'),
-        createData('A', 'banana', 13, '24/06/2019'),
-        createData('A', 'banana', 13, '24/06/2019'),
+        createData('B', 'banana', 13, '24/06/2019'),
+        createData('C', 'banana', 13, '24/06/2019'),
         
       ];
 
      const classes = useStyles();
-     // aqui código que deverá conectar com o firebase
-    // const [empresas , setEmpresas] = useState("");
-    // const [produtos, setProdutos] = useState("");
-
-    // //codigo para buscar as empresas no Firebase
-    // const buscarEmpresas = (snap) => {
-    //     const listaEmpresas = snap.docs.map((doc) => {
-    //       return {
-    //         id: doc.id,
-    //         ...doc.data()
-    //       }
-    //     })
-    //     setEmpresas(listaEmpresas)
-    //   }
-    
-
-    // Utilizar somente o get no firebase
-    //   useEffect(() => {
-    //     const listen = firebase.firestore().collection('Nome da collection').onSnapshot(buscarEmpresas)
-    
-    //     return () => listen();
-    //   }, [])
-
-    // //pensando uma maneira de buscar os produtos 
-    //             const buscarProdutos = (snap) => {
-    //                 const listaProdutos = snap.docs.map((doc) => {
-    //                 return {
-    //                     id: doc.id,
-    //                     ...doc.data()
-    //                 }
-    //                 })
-    //                 setEmpresas(listaProdutos)
-    //             }
-                
-    //             useEffect(() => {
-    //                 const listen = firebase.firestore().collection('Nome da collection').onSnapshot(buscarProdutos)
-                
-    //                 return () => listen();
-    //             }, [])
-
-   
 
 
-// aqui estou fazendo o teste com o map para as empresas
   return (
     <>
-      <Menu/>
-      <Container fixed>
-          <Grid container spacing={3}>
-              <Grid item xs={6}>
+    <Menu/>
+    <Container>
+        <Grid container spacing={3}>
+            <Grid  item xs={6}>
+                    <Autocomplete
+                            id="empresa"
+                            options={empresas}
+                            getOptionLabel={(option) => option.nome}
+                            onChange={(event,option) => pegarProdutos (option)}
+                            style={{ width: 580 }}
+                            disableClearable
+                            renderInput={(params) => <TextField {...params} label="Selecione a empresa" variant="outlined" />}
+                    />
+            </Grid>
+
+            <Grid item xs={4}></Grid>
+
+            <Grid  item xs={2}>
+              <form className={classes.container} noValidate>
+                <TextField
+                  id="date"
+                  label="Data Inicial"
+                  type="date"
+                  defaultValue=""
+                  fullWidth={true}
+                  className={classes.textField}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                />
+              </form>
+            </Grid>
+
+            <Grid  item xs={6}>     
+                    <form className={classes.root} noValidate autoComplete="off">
+                    <Autocomplete
+                            id="produto-vinculado"
+                            options={produtosVinculados}
+                            getOptionLabel={(option) => option.nome}
+                            style={{ width: 580 }}
+                            disableClearable
+                            renderInput={(params) => <TextField {...params} label="Selecione o produto" variant="outlined" />}
+                    />
+                    </form>
+            </Grid>
+
+            <Grid item xs={4}></Grid>
+
+            <Grid item xs={2}>
               
-                  <Paper className={classes.paper}>
-                      <form className={classes.root} noValidate autoComplete="off">
-                      <TextField
-                      id="standard-select-empresas"
-                      select
-                      value={empresas}
-                      onChange={handleChange}
-                      helperText="Please select your empresas"
-                      >  
-                          {listaEmpresa.map((option) => (
-                              <MenuItem key={option.value} value={option.nome}>
-                              {option.nome}
-                              </MenuItem>
-                          ))}
-                      </TextField>
-                      </form>
-                  </Paper>
-                  
-              </Grid>
-              <Grid item xs={6}>
-                  <Paper className={classes.paper}>DATA</Paper>
-              </Grid>
-              <Grid item xs={6}>
-                  <Paper className={classes.paper}>
-                      <form className={classes.root} noValidate autoComplete="off">
-                          <TextField
-                          id="standard-select-produtos"
-                          select
-                          value={produtos}
-                          onChange={handleChange_}
-                          helperText="Please select your produtos"
-                          >  
-                              {listaProdutos.map((option) => (
-                                  <MenuItem key={option.value} value={option.nome}>
-                                  {option.nome}
-                                  </MenuItem>
-                              ))}
-                      </TextField>
-                      </form>
-                  </Paper>
-              </Grid>
-              <Grid item xs={6}>
-                  <Paper className={classes.paper}>DATA</Paper>
-              </Grid>
-              <Grid item xs={10}>
+              <form className={classes.container} noValidate>
+                <TextField
+                  id="date"
+                  label="Data Final"
+                  type="date"
+                  defaultValue=""
+                  fullWidth={true}
+                  className={classes.textField}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                />
+              </form>
+
+            </Grid>
+
+            <Grid item xs>            
+            </Grid>
+            
+            <Grid  container item xs={2} justify="flex-end">     
+               <Botao>FILTRAR</Botao>
+            </Grid>
                 
-              </Grid>
-              
-              <Grid item xs={2}>
-                <Button variant="contained" color="primary">FILTRAR</Button>
-              </Grid>
+        </Grid>     
+          <TableContainer className={classes.container} component={Paper}>
+           <Table className={classes.table} aria-label="customized table">
+            <TableHead>
+              <TableRow>
+                <StyledTableCell>Empresas</StyledTableCell>
+                <StyledTableCell align="right">Nome do Produto</StyledTableCell>
+                <StyledTableCell align="right">Quantidade</StyledTableCell>
+                <StyledTableCell align="right">Data</StyledTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows.map((row) => (
+                <StyledTableRow key={row.name}>
+                  <StyledTableCell component="th" scope="row">
+                    {row.name}
+                  </StyledTableCell>
+                  <StyledTableCell align="right">{row.produto}</StyledTableCell>
+                  <StyledTableCell align="right">{row.quantidade}</StyledTableCell>
+                  <StyledTableCell align="right">{row.data}</StyledTableCell>
                   
-          </Grid>
-
-        <TableContainer component={Paper}>
-        <Table className={classes.table} aria-label="customized table">
-          <TableHead>
-            <TableRow>
-              <StyledTableCell>Empresas</StyledTableCell>
-              <StyledTableCell align="right">Nome do Produto</StyledTableCell>
-              <StyledTableCell align="right">Quantidade</StyledTableCell>
-              <StyledTableCell align="right">Data</StyledTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row) => (
-              <StyledTableRow key={row.name}>
-                <StyledTableCell component="th" scope="row">
-                  {row.name}
-                </StyledTableCell>
-                <StyledTableCell align="right">{row.produto}</StyledTableCell>
-                <StyledTableCell align="right">{row.q8antidade}</StyledTableCell>
-                <StyledTableCell align="right">{row.data}</StyledTableCell>
-                
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
-
-        
-      </Container>
-   
+                </StyledTableRow>
+              ))}
+            </TableBody>
+           </Table>
+         </TableContainer>
+    </Container>
     </>
-
- 
   );
 }
+

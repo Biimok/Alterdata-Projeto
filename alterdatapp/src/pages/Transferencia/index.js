@@ -117,10 +117,11 @@ const upRelatorios = () => {
           nome: empresaSaida.nome,
           id: empresaSaida.id
         },
-        dataEntrega: dataEntrega.toLocaleDateString('pt-BR'),
-        dataRealizada: new Date().toLocaleDateString('pt-BR'),
+        dataEntrega: firestore.Timestamp.fromDate(dataEntrega),
+        dataRealizada: firestore.Timestamp.fromDate(new Date()),
+        // new Date().toLocaleDateString('pt-BR')
         descricao: descricao,
-        produtos : produtosSelec
+        produtos : produtosSelec,
       }).then(() => {
         console.log('success relatorio')
       })
@@ -187,7 +188,6 @@ useEffect(() => {
         />
         <TextField 
           type="date"
-          label="Data de Entrega"
           variant="outlined"
           onChange={(date) => setDataEntrega(date.target.valueAsDate)}
         />

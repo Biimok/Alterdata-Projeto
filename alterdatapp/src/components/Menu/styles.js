@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const Nav = styled.div`
 display: flex;
 flex-direction: column;  
-padding-bottom: 12px;
+padding-bottom: 15px;
 
 .root {
 flex-Grow: 1;
@@ -44,8 +44,6 @@ display: block;
 color: white;
 font-size: 13px;
 padding: 6px 6px;
-text-decoration: none;
 font-family: arial;
 }
-
 `

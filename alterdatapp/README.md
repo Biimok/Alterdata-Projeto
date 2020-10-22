@@ -49,4 +49,4 @@ Esse projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE.md) para
 <a href="https://github.com/Biimok"> Jean-Luc Ernest </a> |
 <a href="https://github.com/KARLA-DINIZ"> Karla Diniz </a> |
 <a href="https://github.com/leticiatayt-sohn"> Letícia Tayt-sohn </a> |
-<a href=""> Renan Ribeiro </a> 
+<a href="https://github.com/renanribeiro810"> Renan Ribeiro </a> 

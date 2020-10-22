@@ -1,32 +1,47 @@
 import styled from 'styled-components';
 
 
-export const Formul = styled.div`
-display:flex;
-align-items:center;
+export const Produto = styled.div`
+text-align: center;
+display: flex;
+width:100%;
 
-
-.campos {
+.espacoInput {
 display:flex;
-padding: 0px 10px;
+justify-content: space-between;
 }
 
 
 
-#campoDescricao {
-    height: 10px;
-    width: 270px;
-    padding: 20px;
+.teste {
+        width: 400px;
+        border: 5px solid #191967;
+        padding: 100px;
+        margin: 10px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
 }
 
 #campoMaior {
     height: 10px;
-    width: 300px;
-    padding: 20px;
-    
+    flex:1;  
+}
+
+.textoRegistro {
+    color: #191967;
+    font-weight: bold;
+    text-align: left;  
 }
 
 
 
-
+.botao {
+    padding-top: 20px;
+    justify-content: space-between;
+    display: flex;
+    flex: 1;  
+}
 `

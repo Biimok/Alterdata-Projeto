@@ -7,6 +7,7 @@ export const Botao = styled(Button)`
     background-color:  rgb(15, 152, 171);
     color: white;
     margin-right: 15px;
+    width:120px;
 
     :hover {
       background-color:  rgb(15, 152, 171);

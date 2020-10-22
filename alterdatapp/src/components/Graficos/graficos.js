@@ -6,14 +6,12 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 
 function Graficos() {
-  const [listaEmpresas, setListaEmpresas] = useState([]);
   const [barData, setBarData] = useState([]);
   const [pieData, setPieData] = useState([]);
-  const [dia, setDia] = useState(`${new Date().getDate()}-${new Date().getMonth()}-${new Date().getFullYear()}`);
+  const [grafData, setGrafData] = useState([]);
 
   const getEmpresas = useCallback(async () => {
     try {
-      console.log(dia);
       const response = await firebase.firestore().collection('empresas').get();
 
       const finalArray = [['Empresa', 'QtdProduto']];
@@ -25,7 +23,7 @@ function Graficos() {
         temp.push({id: doc.id, ...doc.data(), produtosVinculados: responseP.size || 0});
         finalArray.push([doc.data().nome, countP || 0]);
       })
-      setListaEmpresas(temp);
+      console.log(finalArray, 'getempresas Grafico');
       setPieData(finalArray)
       getRelatoriosFull(temp);
     } catch (error) {
@@ -37,8 +35,6 @@ function Graficos() {
     const relatRef = firebase.firestore().collection('relatorios');
     try {
       const responseFull = await relatRef.get();
-      // const responseFilter = await relatRef.where("dataRealizada", ">=", dia).orderBy("dataRealizada", "asc").get();
-      
 
       const finalArray = [['Empresa', 'Em estoque', 'Movimentado']]
       lista.map(empresa => {
@@ -49,45 +45,64 @@ function Graficos() {
           if (data.empresaEntrada.id === empresa.id || data.empresaSaida.id === empresa.id) {
             count++;
             temp = [empresa.nome, empresa.produtosVinculados, count]
-          } else {
-            temp = [empresa.nome, empresa.produtosVinculados, count]
           }
         })
+        if (count === 0) {
+          temp = [empresa.nome, empresa.produtosVinculados, count]
+        }
         finalArray.push(temp); 
       })
-      console.log(finalArray)
+      console.log(finalArray, 'getRelatorios Grafico');
       setBarData(finalArray);
-      // getRelatoriosFilter(responseFilter);
+      getRelatoriosFilter();
       
     } catch (error) {
       console.log('error getRelatorios', error);
     }
   };
 
-  // const getRelatoriosFilter = (response) => {
-  //   const lista = [];
-  //   const data = [];
+  const getRelatoriosFilter = async () => {
+    let dia = new Date();
+    dia.setDate(dia.getDate()-30);
+    dia.setHours(0);
+    dia.setMinutes(0);
+    dia.setSeconds(0);
+    const response = await firebase.firestore().collection('relatorios').where("dataRealizada", ">=", dia).orderBy("dataRealizada", "asc").get();
+    const finalArray = [];
+    let temp = [];
+    let count = 0;
+    let check = '';
+    response.forEach(doc => {
+      
+      const data = doc.data();
+      const newData = new Date(data.dataRealizada.seconds*1000);
+      data.dataRealizada = `${newData.getDate()}/${newData.getMonth()+1}/${newData.getFullYear()}`;
+      console.log(data.dataRealizada);
+      if (temp.length === 0) {
+        check = data.dataRealizada;
+        count++;
+        temp = [data.dataRealizada, count]
+      } else if (data.dataRealizada === check) {
+        count++;
+        temp = [data.dataRealizada, count]
+      } else {
+        finalArray.push(temp);
+        count = 1;
+        temp = [data.dataRealizada, count]
+      }
+    });
 
-  //   response.forEach(doc => {
-  //     lista.push({id: doc.id, ...doc.data()});
-  //   });
-
-  //     /*
-  //       0:
-  //         dataEntrega: "10/11/1111"
-  //         dataRealizada: "21/10/2020"
-  //         descricao: ""
-  //         empresaEntrada: {id: "Estoque", nome: "estoque"}
-  //         empresaSaida: {id: "", nome: ""}
-  //         id: "0vdeX2mVlit4gb46FrIX"
-  //         produtos: (2) [{…}, {…}] 
-  //     */
-
-  // }
+    if (finalArray.length === 0) {
+      finalArray.push(temp);
+    }
+    console.log(finalArray, 'getFilter Grafico');
+    setGrafData(finalArray);
+  }
 
   useEffect(() => {
     getEmpresas();
-  }, [getEmpresas])
+  }, [getEmpresas]);
+
 
   return (
 
@@ -103,9 +118,12 @@ function Graficos() {
           //loader={<div> Gerando  Gráficos... </div>}
           data= {barData}
 
+          // Falta definir os options para customizar
+
           options={{
           title: 'Gráfico de Movimentação',
           chartArea: { width: '40%'},
+          colors: ['#0f98ab', '#9c0707'], // cor das barras
           hAxis: {
             title: 'Movimentações',
             minValue: 0
@@ -124,16 +142,21 @@ function Graficos() {
            chartType="PieChart"
            data={pieData}
                options={{
-               title: 'Estoque',
-               pieHole: 0.4,
+               title: 'Estoque Por Empresa',
+               pieHole: 0.4, // espaçamento central 
+               colors: ['#0f98ab', '#a2c4c9', '#76a5af', '#45818e', '#134f5c', '#0c343d'], // Cores das fatias
                pieSliceTextStyle: {
-                color: 'black',
+                color: 'black', // Cor do texto que vai dentro do Gráfico
               },
+               // pieSliceText: 'percentage', // Tipo de exibição do dado no gráfico (% ou nome)
+                pieSliceBorderColor: 'rgb(12,52,61)', //Cor de contorno do gráfico
+                //legend: 'labeled', //Define onde fica a Legenda do gráfico (labeled, none e direcionada)
                }}
                rootProps={{ 'data-testid': '7' }}
 
-               //Problema com o Grid resolvido, preciso ainda  reposicionar o elemento na tela
-
+                //Filtro de pesquisa: 
+               //Problema com o Grid parcialmente resolvido, preciso ainda  reposicionar o elemento na tela
+               
                chartPackages={['corechart', 'controls']}
                controls={[
                  {
@@ -151,7 +174,7 @@ function Graficos() {
                        labelStacking: 'vertical',
                        label: 'Filtrar Empresa:',
                        //allowTyping: false,
-                       allowMultiple: true,
+                       allowMultiple: true, 
                      },
                    },
                  },
@@ -167,23 +190,23 @@ function Graficos() {
           data={[
               ['Dia', 'Movimentação'],
               [1,           0],
-              [2,         110],
-              [3,         223],
-              [4,         137],
+              [2,         1103],
+              [3,         2123],
+              [4,         1337],
               [5,         158],
-              [6,          97],
-              [7,         191],
-              [8,         271],
-              [9,         338],
-              [10,        404],
-              [11,        324],
-              [12,        353],
-              [13,        232],
-              [14,        110],
-              [15,        239],
-              [16,        171],
-              [17,        189],
-              [18,        900],
+              [6,          9271],
+              [7,         1912],
+              [8,         2721],
+              [9,         3318],
+              [10,        4044],
+              [11,        3224],
+              [12,        3523],
+              [13,        2332],
+              [14,        1110],
+              [15,        2319],
+              [16,        1711],
+              [17,        1819],
+              [18,        9030],
               [19,        1000],
               [20,        2700],
               [21,        3300],
@@ -197,10 +220,16 @@ function Graficos() {
               [29,        12200],
               [30,        12250],
             ]}
+
+            //Falta definir os Options para customização
+
             options={{
+              colors:['#0f98ab'], // cor da linha
               hAxis: {
               title: 'Movimento dos últimos 30 dias',
               },
+              //pointSize: 2, // Gera pontos visíveis em cada dia no gráfico, valor do tamanho
+              lineSize: 2, // Espessura da linha
               vAxis: {
               title: 'Movimentação',
               },
