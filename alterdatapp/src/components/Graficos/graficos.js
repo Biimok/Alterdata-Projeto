@@ -4,7 +4,6 @@ import { Grid, Container } from '@material-ui/core'
 import { GrafStyle } from './styles';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
-import { date } from 'yup';
 
 function Graficos() {
   const [listaEmpresas, setListaEmpresas] = useState([]);
@@ -23,8 +22,8 @@ function Graficos() {
         let countP = 0;
         const responseP = await firebase.firestore().collection('empresas').doc(doc.id).collection('produtosVinculados').get();
         responseP.forEach(prod => countP = countP + prod.data().quantidade)
-        temp.push({id: doc.id, ...doc.data(), produtosVinculados: responseP.size});
-        finalArray.push([doc.data().nome, countP]);
+        temp.push({id: doc.id, ...doc.data(), produtosVinculados: responseP.size || 0});
+        finalArray.push([doc.data().nome, countP || 0]);
       })
       setListaEmpresas(temp);
       setPieData(finalArray)
@@ -38,7 +37,7 @@ function Graficos() {
     const relatRef = firebase.firestore().collection('relatorios');
     try {
       const responseFull = await relatRef.get();
-      const responseFilter = await relatRef.where("dataRealizada", ">=", dia).orderBy("dataRealizada", "asc").get();
+      // const responseFilter = await relatRef.where("dataRealizada", ">=", dia).orderBy("dataRealizada", "asc").get();
       
 
       const finalArray = [['Empresa', 'Em estoque', 'Movimentado']]
@@ -50,38 +49,41 @@ function Graficos() {
           if (data.empresaEntrada.id === empresa.id || data.empresaSaida.id === empresa.id) {
             count++;
             temp = [empresa.nome, empresa.produtosVinculados, count]
+          } else {
+            temp = [empresa.nome, empresa.produtosVinculados, count]
           }
         })
         finalArray.push(temp); 
       })
+      console.log(finalArray)
       setBarData(finalArray);
-      getRelatoriosFilter(responseFilter);
+      // getRelatoriosFilter(responseFilter);
       
     } catch (error) {
       console.log('error getRelatorios', error);
     }
   };
 
-  const getRelatoriosFilter = (response) => {
-    const lista = [];
-    const data = [];
+  // const getRelatoriosFilter = (response) => {
+  //   const lista = [];
+  //   const data = [];
 
-    response.forEach(doc => {
-      lista.push({id: doc.id, ...doc.data()});
-    });
+  //   response.forEach(doc => {
+  //     lista.push({id: doc.id, ...doc.data()});
+  //   });
 
-      /*
-        0:
-          dataEntrega: "10/11/1111"
-          dataRealizada: "21/10/2020"
-          descricao: ""
-          empresaEntrada: {id: "Estoque", nome: "estoque"}
-          empresaSaida: {id: "", nome: ""}
-          id: "0vdeX2mVlit4gb46FrIX"
-          produtos: (2) [{…}, {…}] 
-      */
+  //     /*
+  //       0:
+  //         dataEntrega: "10/11/1111"
+  //         dataRealizada: "21/10/2020"
+  //         descricao: ""
+  //         empresaEntrada: {id: "Estoque", nome: "estoque"}
+  //         empresaSaida: {id: "", nome: ""}
+  //         id: "0vdeX2mVlit4gb46FrIX"
+  //         produtos: (2) [{…}, {…}] 
+  //     */
 
-  }
+  // }
 
   useEffect(() => {
     getEmpresas();

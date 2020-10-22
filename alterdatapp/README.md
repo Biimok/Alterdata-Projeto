@@ -1,4 +1,4 @@
-<img src="./assets/readme.png" width="400">
+<img src="./assets/login_page.jpeg" width="400">
 
 
 <h1 align="center">Controle de Estoque Bimer 2!</h1>

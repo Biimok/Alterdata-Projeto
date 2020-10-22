@@ -8,31 +8,11 @@ import Menu from '../../components/Menu';
 
 function Dashboard() {
 
-const [ qtdProdutos, setQtdProdutos ] = useState(null);
-
-
-
-const getProdutos = useCallback(async () => {
-  try {
-    const response = await firebase.firestore().collection('produtos').get();
-    const temp = [];
-    response.forEach(doc => {
-      temp.push({id: doc.id, ...doc.data()});
-    })
-
-    
-    setQtdProdutos(temp.length);
-  } catch (error) {
-    console.log('error getProdutos', error);
-  }
-},[]);
-
 
 
   return (
     <>
     <Menu/>
-    <p>{qtdProdutos}</p>
     <Grafico/>
    
     </>
