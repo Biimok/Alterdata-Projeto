@@ -15,7 +15,8 @@ import {
   TableHead,
   Paper,
   IconButton,
-  Grid} from '@material-ui/core';
+  Grid
+} from '@material-ui/core';
 import Menu from '../../components/Menu';
 import 'firebase/firestore';
 import firebase from 'firebase/app';
@@ -152,7 +153,7 @@ export default function Relatorio() {
         resposta.forEach(doc => {
           resp.push({id: doc.id, ...doc.data()});
         })
-        setEmpresaSelec(`${empresa.id}_${empresa.nome}`);
+        setEmpresaSelec(`${empresa.id}_${empresa.razaoSocial}`);
         console.log(resp)
         setProdutosVinculados(resp);
       }
@@ -179,7 +180,6 @@ export default function Relatorio() {
       resp.push({id: doc.id, ...doc.data()});
     });
 
-    console.log(resp);
     setRelatFiltrado(resp);
 
 
@@ -204,7 +204,7 @@ export default function Relatorio() {
                     <Autocomplete
                             id="empresa"
                             options={empresas}
-                            getOptionLabel={(option) => option.nome}
+                            getOptionLabel={(option) => option.razaoSocial}
                             onChange={(event,option) => option ? pegarProdutos (option) : ''}
                             style={{ width: 580 }}
                             renderInput={(params) => <TextField {...params} label="Selecione a empresa" variant="outlined" />}

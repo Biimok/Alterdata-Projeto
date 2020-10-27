@@ -45,6 +45,7 @@ function CadastroProduto() {
       })
 
       reset();
+      setUrl('');
       
     } catch(error) {
       console.log('error setProduto', error);
@@ -84,7 +85,6 @@ function CadastroProduto() {
          id="campoMaior" 
          type="number" 
          name="valor"
-         step="any"
          label="Valor"/>
         </div>
 

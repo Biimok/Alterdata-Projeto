@@ -21,7 +21,7 @@ function Graficos() {
         const responseP = await firebase.firestore().collection('empresas').doc(doc.id).collection('produtosVinculados').get();
         responseP.forEach(prod => countP = countP + prod.data().quantidade)
         temp.push({id: doc.id, ...doc.data(), produtosVinculados: responseP.size || 0});
-        finalArray.push([doc.data().nome, countP || 0]);
+        finalArray.push([doc.data().razaoSocial, countP || 0]);
       })
       setPieData(finalArray);
       getRelatoriosFull(temp);
@@ -41,13 +41,13 @@ function Graficos() {
         let count = 0;
         responseFull.forEach(doc => {
           const data = doc.data();
-          if (data.empresaEntrada === `${empresa.id}_${empresa.nome}` || data.empresaSaida === `${empresa.id}_${empresa.nome}`) {
+          if (data.empresaEntrada === `${empresa.id}_${empresa.razaoSocial}` || data.empresaSaida === `${empresa.id}_${empresa.razaoSocial}`) {
             count++;
-            temp = [empresa.nome, empresa.produtosVinculados, count]
+            temp = [empresa.razaoSocial, empresa.produtosVinculados, count]
           }
         })
         if (count === 0) {
-          temp = [empresa.nome, empresa.produtosVinculados, count]
+          temp = [empresa.razaoSocial, empresa.produtosVinculados, count]
         }
         finalArray.push(temp); 
       })

@@ -24,8 +24,8 @@ function Transferencia() {
 const [listaEmpresas, setListaEmpresas] = useState([]);
 const [listaProdutos, setListaProdutos] = useState([]);
 const [produtosSelec, setProdutosSelec] = useState([]);
-const [empresaEntrada, setEmpresaEntrada] = useState({nome: '', id: ''});
-const [empresaSaida, setEmpresaSaida] = useState({nome: '', id: ''});
+const [empresaEntrada, setEmpresaEntrada] = useState({razaoSocial: '', id: ''});
+const [empresaSaida, setEmpresaSaida] = useState({razaoSocial: '', id: ''});
 const [dataEntrega, setDataEntrega] = useState(Date);
 const [descricao, setDescricao] = useState('');
 const [produto, setProduto] = useState({});
@@ -133,8 +133,8 @@ const upRelatorios = () => {
   }).then(() => {
     batch.commit().then(async function () {
       await firestore().collection('relatorios').add({
-        empresaEntrada:`${empresaEntrada.id}_${empresaEntrada.nome}`,
-        empresaSaida:`${empresaSaida.id}_${empresaSaida.nome}`,
+        empresaEntrada:`${empresaEntrada.id}_${empresaEntrada.razaoSocial}`,
+        empresaSaida:`${empresaSaida.id}_${empresaSaida.razaoSocial}`,
         dataEntrega: firestore.Timestamp.fromDate(dataEntrega),
         dataRealizada: firestore.Timestamp.fromDate(new Date()),
         // new Date().toLocaleDateString('pt-BR')
@@ -210,8 +210,8 @@ useEffect(() => {
         id="empresa-entrada"
       
         options={listaEmpresas}
-        getOptionLabel={(option) => option.nome}
-        onChange={(value, text) => text ? setEmpresaEntrada({nome: text.nome, id: text.id}) : ''}
+        getOptionLabel={(option) => option.razaoSocial}
+        onChange={(value, text) => text ? setEmpresaEntrada({razaoSocial: text.razaoSocial, id: text.id}) : ''}
         style={{ width: 600 }}
         renderInput={(params) => <TextField {...params} label="Empresa de entrada" variant="outlined" />}
       />
@@ -221,8 +221,8 @@ useEffect(() => {
       <Autocomplete
         id="empresa-saida"
         options={listaEmpresas}
-        onChange={(value, text) => text ? setEmpresaSaida({nome: text.nome, id: text.id}) : ''}
-        getOptionLabel={(option) => option.nome}
+        onChange={(value, text) => text ? setEmpresaSaida({razaoSocial: text.razaoSocial, id: text.id}) : ''}
+        getOptionLabel={(option) => option.razaoSocial}
         style={{ width: 600 }}
         renderInput={(params) => <TextField {...params} label="Empresa de saída" variant="outlined" />}
       />

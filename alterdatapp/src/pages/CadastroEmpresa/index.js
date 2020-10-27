@@ -43,7 +43,7 @@ function CadastroEmpresa() {
         .firestore()
         .collection("empresas")
         .add({
-          razaoSocial: data.nome,
+          razaoSocial: data.razaoSocial,
           cnpj: data.cnpj,
           ramoAtividade: data.ramo,
           nomeFantasia: data.nomeFantasia,
