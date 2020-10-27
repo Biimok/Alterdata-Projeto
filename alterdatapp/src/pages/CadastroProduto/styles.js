@@ -11,37 +11,33 @@ display:flex;
 justify-content: space-between;
 }
 
-
-
-.teste {
-        width: 400px;
-        border: 5px solid #191967;
-        padding: 100px;
-        margin: 10px;
-}
-
 .form {
-    display: flex;
-    flex-direction: column;
+display: flex;
+flex-direction: column;
 }
 
 #campoMaior {
-    height: 10px;
-    flex:1;  
+height: 10px;
+flex:1;  
 }
 
 .textoRegistro {
-    color: #191967;
-    font-weight: bold;
-    text-align: left;  
+color: #191967;
+font-weight: bold;
+text-align: left;  
 }
-
-
 
 .botao {
-    padding-top: 20px;
-    justify-content: space-between;
-    display: flex;
-    flex: 1;  
+padding-top: 20px;
+justify-content: space-between;
+display: flex;
+flex: 1;  
+}
+
+.upload {
+height: 250px; 
+width: 300px;
+border: 3px solid #191967;
 }
 `
+

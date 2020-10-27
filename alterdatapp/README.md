@@ -1,4 +1,4 @@
-<img src="./assets/login_page.jpeg" width="400">
+<img src="https://imgur.com/M41ckS0">
 
 
 <h1 align="center">Controle de Estoque Bimer 2!</h1>
@@ -12,7 +12,7 @@
 
 ## ✍ Descrição
 
-<strong> BIMER 2 </strong> é um sistema desenvolvido pelos alunos da Residência de Software do SERRATEC como projeto final do curso. O sistema  possui algumas funcionabilidades como: login, cadastro de produtos e empresas, transferência de produtos entre as empresas e geração de relatórios. 
+<strong> BIMER 2 </strong> é um sistema desenvolvido pelos alunos da Residência de Software do SERRATEC como projeto final do curso. O sistema  possui algumas funcionabilidades como: login, cadastro de produtos, cadastro de empresas, transferência de produtos entre empresas, dashboard e geração de relatórios. 
 
 
  ## 💻 Instalação e execução

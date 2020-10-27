@@ -1,10 +1,20 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import firebase, { firestore } from 'firebase/app';
 import 'firebase/firestore';
-import TextField from '@material-ui/core/TextField';
+import {
+  TextField,
+  Divider,
+  Container,
+  Typography,
+  Fab,
+  Grid
+}from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import Menu from '../../components/Menu';
+import MenuNovo from '../../components/Menu';
 import { Transf } from './styles';
+import Button from "../../components/Button";
+import Footer from '../../components/Footer';
 
 // import { Container } from './styles';
 
@@ -31,7 +41,6 @@ const getEmpresas = useCallback(async () => {
     response.forEach(doc => {
       temp.push({id: doc.id, ...doc.data()});
     })
-
     setListaEmpresas(temp);
   } catch (error) {
     console.log('error getEmpresas', error);
@@ -40,15 +49,28 @@ const getEmpresas = useCallback(async () => {
 
 const getProdutos = useCallback(async () => {
   try {
-    const response = await firebase.firestore().collection('produtos').get();
 
-    const temp = [];
+    // if (empresaSaida.id != '') {
+    //   const response = await firebase.firestore().collection('empresas').doc(empresaSaida.id).collection('produtosVinculados').get();
 
-    response.forEach(doc => {
-      temp.push({id: doc.id, ...doc.data()});
-    })
+    //   const temp = [];
 
-    setListaProdutos(temp);
+    //   response.forEach(doc => {
+    //     temp.push({id: doc.id, ...doc.data()});
+    //   })
+    //   console.log(temp);
+    //   setListaProdutos(temp);
+    // } else {
+      const response = await firebase.firestore().collection('produtos').get();
+
+      const temp = [];
+
+      response.forEach(doc => {
+        temp.push({id: doc.id, ...doc.data()});
+      })
+      setListaProdutos(temp);
+    // }
+    
   } catch (error) {
     console.log('error getProdutos', error);
   }
@@ -59,13 +81,31 @@ const upRelatorios = () => {
 
    new Promise((resolve,reject) => {
      let check = produtosSelec.length;
-    produtosSelec.forEach((produto) => {
+    produtosSelec.forEach(async (produto) => {
+      const id = produto.id.slice(0, produto.id.indexOf("_"))
       // debugger
-      let docEntRef =  firestore()
+      if (empresaEntrada.id !== '' ) {
+        let docEntRef =  firestore()
                       .collection('empresas')
                       .doc(empresaEntrada.id)
                       .collection('produtosVinculados')
-                      .doc(produto.id);
+                      .doc(id);
+        await docEntRef.get().then(async function(doc) {
+          // debugger
+          if (doc.exists) {
+            batch.update(docEntRef, {quantidade: firebase.firestore.FieldValue.increment(produto.qtdSelecionada)});
+          } else {
+            await firebase.firestore().collection('empresas').doc(empresaEntrada.id).collection('produtosVinculados').doc(id).set({
+              categoria: produto.categoria,
+              descricao: produto.descricao,
+              nome: produto.nome,
+              quantidade: produto.qtdSelecionada,
+              valor: produto.valor
+            })
+          }
+        })
+      }
+      
       
       if(empresaSaida.id !== '') {
         let docSaiRef = 
@@ -73,35 +113,19 @@ const upRelatorios = () => {
                       .collection('empresas')
                       .doc(empresaSaida.id)
                       .collection('produtosVinculados')
-                      .doc(produto.id);
+                      .doc(id);
   
   
-        docSaiRef.get().then(function(doc) {
+        await docSaiRef.get().then(function(doc) {
           if(doc.exists) {
             batch.update(docSaiRef, {quantidade: firebase.firestore.FieldValue.increment(-produto.qtdSelecionada)});
           }
         })
       }
-      
-      docEntRef.get().then(async function(doc) {
-        // debugger
-        if (doc.exists) {
-          batch.update(docEntRef, {quantidade: firebase.firestore.FieldValue.increment(produto.qtdSelecionada)});
-        } else {
-          await firebase.firestore().collection('empresas').doc(empresaEntrada.id).collection('produtosVinculados').doc(produto.id).set({
-            categoria: produto.categoria,
-            descricao: produto.descricao,
-            nome: produto.nome,
-            quantidade: produto.qtdSelecionada,
-            valor: produto.valor
-          })
-        }
-        check--;
-        if(check === 0) {
-          resolve();
-        }
-      })
-      
+      check--;
+      if(check === 0) {
+        resolve();
+      }
 
     })
     
@@ -109,19 +133,13 @@ const upRelatorios = () => {
   }).then(() => {
     batch.commit().then(async function () {
       await firestore().collection('relatorios').add({
-        empresaEntrada: {
-          nome: empresaEntrada.nome,
-          id: empresaEntrada.id
-        },
-        empresaSaida: {
-          nome: empresaSaida.nome,
-          id: empresaSaida.id
-        },
+        empresaEntrada:`${empresaEntrada.id}_${empresaEntrada.nome}`,
+        empresaSaida:`${empresaSaida.id}_${empresaSaida.nome}`,
         dataEntrega: firestore.Timestamp.fromDate(dataEntrega),
         dataRealizada: firestore.Timestamp.fromDate(new Date()),
         // new Date().toLocaleDateString('pt-BR')
         descricao: descricao,
-        produtos : produtosSelec,
+        produtos : produtosSelec
       }).then(() => {
         console.log('success relatorio')
       })
@@ -143,16 +161,24 @@ const addProduto = () => {
   let check = false;
   if(produtosSelec.length > 0) {
     produtosSelec.forEach((item) => {
-      if (item.id === produto.id) {
+      if (item.id === `${produto.id}_${produto.nome}`) {
           check = true;
       } 
     });
   }
   
   if (!check) {
-    setProdutosSelec([...produtosSelec, {...produto, qtdSelecionada: qtdSelecionada}]);
+    setProdutosSelec(
+      [...produtosSelec, 
+        {
+          ...produto, 
+          id: `${produto.id}_${produto.nome}`, 
+          qtdSelecionada: qtdSelecionada
+        }
+      ]
+    );
   } else {
-    setProdutosSelec(produtosSelec.filter((item) => (item.id === produto.id ? item.qtdSelecionada = qtdSelecionada : item)))
+    setProdutosSelec(produtosSelec.filter((item) => (item.id === `${produto.id}_${produto.nome}` ? item.qtdSelecionada = qtdSelecionada : item)))
   }
 }
 
@@ -165,75 +191,128 @@ useEffect(() => {
 
 
   return (
-    <Transf>
-      <Menu/>
+<>
+ <MenuNovo/>
+  <Transf>
+    <Container fixed>
+      <Typography className="textoTransf" variant="h5">
+        Transferência
+      </Typography>
+      <Divider style={{paddingTop: "5px"}}/>
+
+      <Grid container spacing={3}> 
       
-        <Autocomplete
-          id="empresa-entrada"
-          options={listaEmpresas}
-          getOptionLabel={(option) => option.nome}
-          onChange={(value, text) => setEmpresaEntrada({nome: text.nome, id: text.id})}
-          style={{ width: 300 }}
-          disableClearable
-          renderInput={(params) => <TextField {...params} label="Empresa de entrada" variant="outlined" />}
-        />
-        <Autocomplete
-          id="empresa-saida"
-          options={listaEmpresas}
-          onChange={(value, text) => setEmpresaSaida({nome: text.nome, id: text.id})}
-          getOptionLabel={(option) => option.nome}
-          style={{ width: 300 }}
-          disableClearable
-          renderInput={(params) => <TextField {...params} label="Empresa de saída" variant="outlined" />}
-        />
-        <TextField 
-          type="date"
-          variant="outlined"
-          onChange={(date) => setDataEntrega(date.target.valueAsDate)}
-        />
-        <TextField 
-          label="Descrição"
-          multiline
-          rowsMax={5}
-          variant="outlined"
-          onChange={(text) => setDescricao(text.target.value)}
-        />
-        
-        <Autocomplete
-          id="produto"
-          options={listaProdutos}
-          onChange={(value, text) => setProduto(text)}
-          getOptionLabel={(option) => option.nome}
-          style={{ width: 300 }}
-          disableClearable
-          renderInput={(params) => <TextField {...params} label="Produto" variant="outlined" />}
-        />
-        <TextField 
-          type="number" 
-          inputProps={{ min:0}} 
-          // max:produto.quantidade || 0,
-          defaultValue={0}
-          onChange={(number) => setQtdSelecionada(number.target.valueAsNumber)}
-        />
-        <p>Max: {produto.quantidade > 0 ? produto.quantidade : "N/A"}</p>
-        <button onClick={addProduto}>Adicionar</button>
-       
-        <div> 
-          {produtosSelec.map(produto => (
-            
-            <div key={produto.id}>
-            <p>Nome: {produto.nome}</p>
+       <Grid item xs></Grid>
+       <Grid item xs={6}>
+
+      <div className = "espacoInput">
+      <Autocomplete
+        id="empresa-entrada"
+      
+        options={listaEmpresas}
+        getOptionLabel={(option) => option.nome}
+        onChange={(value, text) => text ? setEmpresaEntrada({nome: text.nome, id: text.id}) : ''}
+        style={{ width: 600 }}
+        renderInput={(params) => <TextField {...params} label="Empresa de entrada" variant="outlined" />}
+      />
+      </div>
+
+      <div className = "espacoInput">
+      <Autocomplete
+        id="empresa-saida"
+        options={listaEmpresas}
+        onChange={(value, text) => text ? setEmpresaSaida({nome: text.nome, id: text.id}) : ''}
+        getOptionLabel={(option) => option.nome}
+        style={{ width: 600 }}
+        renderInput={(params) => <TextField {...params} label="Empresa de saída" variant="outlined" />}
+      />
+      </div>
+
+      <div className = "espacoInput">
+      <TextField className="espaco"
+        id="data"
+        type="date"
+        variant="outlined"
+        onChange={(date) => setDataEntrega(date.target.valueAsDate)}
+      />
+      <TextField 
+       label="Descrição"
+       style={{ width:390 }}
+       multiline
+       rowsMax={1}
+       variant="outlined"
+       onChange={(text) => setDescricao(text.target.value)}
+      />
+      </div>
+
+      </Grid>
+        <Grid item xs></Grid>
+      
+        </Grid>
+
+      <Typography className="textoProduto" variant="h5">
+        Produtos
+      </Typography>
+      <Divider style={{paddingTop: "5px"}}/>
+
+      <Grid container spacing={3}> 
+       <Grid item xs></Grid>
+     
+       <Grid item xs={6}>
+
+      <div className = "espacoInput">
+      <Autocomplete className="espaco"
+       id="produto"
+       options={listaProdutos}
+       onChange={(value, text) => text ? setProduto(text) : ''}
+       getOptionLabel={(option) => option.nome}
+       style={{ width:360}}
+       renderInput={(params) => <TextField {...params} label="Produto" variant="outlined" />}
+      /> 
+      <TextField 
+        type="number" 
+        inputProps={{ min:0}} 
+        style={{ width:75}}
+        // max:produto.quantidade || 0,
+        defaultValue={0}
+        onChange={(number) => setQtdSelecionada(number.target.valueAsNumber)}
+      />
+     
+      <Typography variant="caption">Max: {produto.quantidade > 0 ? produto.quantidade : "N/A"}</Typography>
+      
+
+      
+      <Fab className="adicionar" onClick={addProduto}>
+      <AddIcon />
+      </Fab>
+      </div>
+      <div> 
+          {produtosSelec.map(produto => (  
+            <div className="textoAdicional" key={produto.id}>
+            <p>Nome: {produto.id.slice(produto.id.indexOf("_") +1)}</p>
             <p>Quantidade: {produto.qtdSelecionada}</p>
             </div>
           ))}
         </div>
 
-        <button onClick={upRelatorios}>Finalizar</button>
-        <button>Cancelar</button>
-      
-        
-   </Transf>
-    );
+        </Grid>
+        <Grid item xs></Grid>
+        </Grid>
+
+
+        <div className = "botao">
+        <div></div>
+        <div>
+        <Button>Cancelar</Button>
+        <Button onClick={() => upRelatorios()}>Finalizar</Button>
+        </div>
+        </div>
+
+        </Container>
+  </Transf>
+  <Footer/>
+</>
+);
 }
 
 export default Transferencia;

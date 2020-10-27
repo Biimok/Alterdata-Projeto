@@ -1,27 +1,35 @@
 import styled from 'styled-components';
 
 export const Fot = styled.div`
+
 .root {
 display: flex;
 flex-direction: column;
-padding-top: 12px;
-}
+padding-top: 40px;
 
-.main {
-margin-top: 8px;
-margin-bottom: 2;
 }
 
 .footer {
+height: 60px;
+margin-top: -50px;
 min-height: 50px;  
-padding: 3px 2px;
 margin-top: auto;
-background-color: rgb(15, 152, 171);
+background-color: #E6E6E6
 }
 
 .texto {
-color: white;
+color: #333333;
 font-size: 13px;
-text-align: center;  
+padding: 5px;
+font-weight: bold;
+text-align: center;
 }
+
+.icone {
+justify-content: center;
+display: flex;
+}
+
+
 `
+

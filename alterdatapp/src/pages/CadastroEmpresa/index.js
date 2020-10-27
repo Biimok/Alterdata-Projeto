@@ -8,7 +8,7 @@ import * as Yup from "yup";
 import Button from "../../components/Button";
 import { Empresa } from "./styles";
 import { Divider, Typography, Container } from "@material-ui/core";
-import InputMask from "react-input-mask";
+import Footer from '../../components/Footer';
 
 function CadastroEmpresa() {
   const formRef = useRef(null);
@@ -229,6 +229,7 @@ function CadastroEmpresa() {
           </Form>
         </Container>
       </Empresa>
+      <Footer/>
     </>
   );
 }

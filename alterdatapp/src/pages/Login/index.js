@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useAuth } from "../../hooks/auth";
 import { useHistory } from "react-router-dom";
 import Button from '../../components/Button';
@@ -8,11 +8,7 @@ import * as Yup from 'yup';
 
 import {
   Avatar,
-  CssBaseline,
   InputAdornment,
-  Link,
-  Grid,
-  Box,
   Container,
 } from "@material-ui/core";
 import Email from "@material-ui/icons/Email";
@@ -24,6 +20,7 @@ function Login() {
   const history = useHistory();
   const { signIn } = useAuth();
   const [loading, setLoading] = useState(false);
+  const formRef = useRef(null);
 
   async function handleSubmit(data) {
     
@@ -59,7 +56,7 @@ function Login() {
       <Wrap>
         <Container className="bloco" component="main" maxWidth="xs">
     
-          <Form className = "form" onSubmit={handleSubmit}>
+          <Form className = "form" onSubmit={handleSubmit} ref={formRef}>
            <div className="espaco">
               <div className="paper">
                 <Avatar className="avatar">

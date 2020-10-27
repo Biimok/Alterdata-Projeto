@@ -6,6 +6,7 @@ function Button (props) {
     <Botao
       type="submit"
       variant="contained"
+      {...props}
     > {props.children}
     </Botao>
   )

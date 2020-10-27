@@ -16,22 +16,34 @@ export default function Input({ name, value, onChange, mask, ...rest }) {
   }, [fieldName, registerField]);
 
   return (
-    <InputMask
-      mask={mask}
-      value={value}
-      onChange={onChange}
-    >
-      <TextField 
-      inputRef={inputRef} 
-      defaultValue={defaultValue}
-      variant="outlined"
-      margin="normal"
-      autoFocus
-      {...rest} 
-      />
-    </InputMask>
+    <>
+    { mask ? 
+        <InputMask
+        mask={mask}
+        value={value}
+        onChange={onChange}
+        >
+          <TextField 
+          inputRef={inputRef} 
+          defaultValue={defaultValue}
+          variant="outlined"
+          margin="normal"
+          autoFocus
+          {...rest} 
+          />
+        </InputMask>
+      : 
+        <TextField 
+        inputRef={inputRef} 
+        defaultValue={defaultValue}
+        variant="outlined"
+        margin="normal"
+        autoFocus
+        {...rest} 
+        />
+    }
     
-    
+    </>
   );
           
 }

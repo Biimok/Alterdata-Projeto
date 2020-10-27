@@ -23,8 +23,7 @@ function Graficos() {
         temp.push({id: doc.id, ...doc.data(), produtosVinculados: responseP.size || 0});
         finalArray.push([doc.data().nome, countP || 0]);
       })
-      console.log(finalArray, 'getempresas Grafico');
-      setPieData(finalArray)
+      setPieData(finalArray);
       getRelatoriosFull(temp);
     } catch (error) {
       console.log('error getEmpresas', error);
@@ -42,7 +41,7 @@ function Graficos() {
         let count = 0;
         responseFull.forEach(doc => {
           const data = doc.data();
-          if (data.empresaEntrada.id === empresa.id || data.empresaSaida.id === empresa.id) {
+          if (data.empresaEntrada === `${empresa.id}_${empresa.nome}` || data.empresaSaida === `${empresa.id}_${empresa.nome}`) {
             count++;
             temp = [empresa.nome, empresa.produtosVinculados, count]
           }
@@ -52,7 +51,6 @@ function Graficos() {
         }
         finalArray.push(temp); 
       })
-      console.log(finalArray, 'getRelatorios Grafico');
       setBarData(finalArray);
       getRelatoriosFilter();
       
@@ -68,16 +66,14 @@ function Graficos() {
     dia.setMinutes(0);
     dia.setSeconds(0);
     const response = await firebase.firestore().collection('relatorios').where("dataRealizada", ">=", dia).orderBy("dataRealizada", "asc").get();
-    const finalArray = [];
+    const finalArray = [['Dia', 'Movimentação'],];
     let temp = [];
     let count = 0;
     let check = '';
     response.forEach(doc => {
-      
       const data = doc.data();
       const newData = new Date(data.dataRealizada.seconds*1000);
       data.dataRealizada = `${newData.getDate()}/${newData.getMonth()+1}/${newData.getFullYear()}`;
-      console.log(data.dataRealizada);
       if (temp.length === 0) {
         check = data.dataRealizada;
         count++;
@@ -88,14 +84,13 @@ function Graficos() {
       } else {
         finalArray.push(temp);
         count = 1;
+        check = data.dataRealizada;
         temp = [data.dataRealizada, count]
       }
     });
 
-    if (finalArray.length === 0) {
-      finalArray.push(temp);
-    }
-    console.log(finalArray, 'getFilter Grafico');
+    
+    finalArray.push(temp);
     setGrafData(finalArray);
   }
 
@@ -109,16 +104,13 @@ function Graficos() {
 <GrafStyle>
   <Container fixed>
   <div className="root">
-   <Grid container spacing={2}>
-   <Grid item xs={12} sm={6}>
-   <Chart className= "border"
-          width={600}
-          height={360}
+   <Grid container spacing={1}>
+   <Grid item xs>
+   <Chart className= "graficoColuna"
+          width={550}
+          height={340}
           chartType = "BarChart"
-          //loader={<div> Gerando  Gráficos... </div>}
           data= {barData}
-
-          // Falta definir os options para customizar
 
           options={{
           title: 'Gráfico de Movimentação',
@@ -135,98 +127,45 @@ function Graficos() {
           />
          
     </Grid>
-    <Grid item xs={12} sm={6}>
-    <Chart className= "border"
-           width={600}
-           height={360}
-           chartType="PieChart"
-           data={pieData}
-               options={{
-               title: 'Estoque Por Empresa',
-               pieHole: 0.4, // espaçamento central 
-               colors: ['#0f98ab', '#a2c4c9', '#76a5af', '#45818e', '#134f5c', '#0c343d'], // Cores das fatias
-               pieSliceTextStyle: {
-                color: 'black', // Cor do texto que vai dentro do Gráfico
-              },
-               // pieSliceText: 'percentage', // Tipo de exibição do dado no gráfico (% ou nome)
-                pieSliceBorderColor: 'rgb(12,52,61)', //Cor de contorno do gráfico
-                //legend: 'labeled', //Define onde fica a Legenda do gráfico (labeled, none e direcionada)
-               }}
-               rootProps={{ 'data-testid': '7' }}
-
-                //Filtro de pesquisa: 
-               //Problema com o Grid parcialmente resolvido, preciso ainda  reposicionar o elemento na tela
-               
-               chartPackages={['corechart', 'controls']}
-               controls={[
-                 {
-                   controlEvents: [
-                     {
-                       eventName: 'statechange',
-                       callback: ({ chartWrapper, controlWrapper }) => {
-                       },
-                     },
-                   ],
-                   controlType: 'CategoryFilter',
-                   options: {
-                     filterColumnIndex: 0,
-                     ui: {
-                       labelStacking: 'vertical',
-                       label: 'Filtrar Empresa:',
-                       //allowTyping: false,
-                       allowMultiple: true, 
-                     },
-                   },
-                 },
-               ]}
-
-             />
+    
+    <Grid item xs>
+        <Chart className= "graficoPizza"
+              width={550}
+              height={340}
+              chartType="PieChart"
+              data={pieData}
+                  options={{
+                  title: 'Estoque Por Empresa',
+                  pieHole: 0.4, // espaçamento central 
+                  colors: ['#0f98ab', '#a2c4c9', '#76a5af', '#45818e', '#134f5c', '#0c343d'], // Cores das fatias
+                  pieSliceTextStyle: {
+                    color: 'white', // Cor do texto que vai dentro do Gráfico
+                  },
+                  // pieSliceText: 'percentage', // Tipo de exibição do dado no gráfico (% ou nome)
+                    pieSliceBorderColor: 'rgb(12,52,61)', //Cor de contorno do gráfico
+                    //legend: 'labeled', //Define onde fica a Legenda do gráfico (labeled, none e direcionada)
+                  }}
+                  rootProps={{ 'data-testid': '7' }}
+                  
+                />
     </Grid>
-    <Grid item xs={12}>
-    <Chart className= "border"
-          width={600}
-          height={360}
+    </Grid>
+    
+    <Grid container spacing={1}>
+    <Grid item xs>
+    <Chart className= "graficoLinha"
+          width={1170} //1170, 550 para deixar padrão 
+          height={340}//340
           chartType="LineChart"
-          data={[
-              ['Dia', 'Movimentação'],
-              [1,           0],
-              [2,         1103],
-              [3,         2123],
-              [4,         1337],
-              [5,         158],
-              [6,          9271],
-              [7,         1912],
-              [8,         2721],
-              [9,         3318],
-              [10,        4044],
-              [11,        3224],
-              [12,        3523],
-              [13,        2332],
-              [14,        1110],
-              [15,        2319],
-              [16,        1711],
-              [17,        1819],
-              [18,        9030],
-              [19,        1000],
-              [20,        2700],
-              [21,        3300],
-              [22,        4000],
-              [23,        4532],
-              [24,        4735],
-              [25,        7823],
-              [26,        9042],
-              [27,        10050],
-              [28,        11118],
-              [29,        12200],
-              [30,        12250],
-            ]}
+          data={grafData}
 
-            //Falta definir os Options para customização
 
             options={{
               colors:['#0f98ab'], // cor da linha
               hAxis: {
               title: 'Movimento dos últimos 30 dias',
+              chartArea: { width: '100%'}, //40
+
               },
               //pointSize: 2, // Gera pontos visíveis em cada dia no gráfico, valor do tamanho
               lineSize: 2, // Espessura da linha
@@ -237,6 +176,7 @@ function Graficos() {
             rootProps={{ 'data-testid': '1' }}
           />
  </Grid>
+ <Grid item xs></Grid>
  </Grid>
  </div>
  </Container>

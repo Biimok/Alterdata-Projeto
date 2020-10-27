@@ -1,62 +1,130 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import {withStyles, makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import { Container } from '@material-ui/core';
-import TextField from '@material-ui/core/TextField';
+import {useTheme} from '@material-ui/core/styles';
+import {
+  Divider, 
+  Container , 
+  Typography,
+  TextField, 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableContainer, 
+  TableFooter, 
+  TablePagination,
+  TableRow,
+  TableHead,
+  Paper,
+  IconButton,
+  Grid} from '@material-ui/core';
 import Menu from '../../components/Menu';
 import 'firebase/firestore';
 import firebase from 'firebase/app';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { Botao } from './styles';
+import { Botao , StyledTableCell, Empresa, Root } from './styles';
+import PropTypes from 'prop-types';
+import FirstPageIcon from '@material-ui/icons/FirstPage';
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+import LastPageIcon from '@material-ui/icons/LastPage';
+import Footer from '../../components/Footer';
 
 
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-  },
-}));
+function TablePaginationActions(props) {
+  
+  const theme = useTheme();
+  const { count, page, rowsPerPage, onChangePage } = props;
 
-const StyledTableCell = withStyles((theme) => ({
-  head: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white,
-    borderTop: '2px solid white',
-    borderTopWidth: '4px',
-  },
-  body: {
-    fontSize: 14,
-  },
-}))(TableCell);
+  const handleFirstPageButtonClick = (event) => {
+    onChangePage(event, 0);
+  };
 
-const StyledTableRow = withStyles((theme) => ({
-  root: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
-  },
-}))(TableRow);
+  const handleBackButtonClick = (event) => {
+    onChangePage(event, page - 1);
+  };
 
+  const handleNextButtonClick = (event) => {
+    onChangePage(event, page + 1);
+  };
 
+  const handleLastPageButtonClick = (event) => {
+    onChangePage(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
+  };
 
+  return (
+    <Root>
+      <IconButton
+        onClick={handleFirstPageButtonClick}
+        disabled={page === 0}
+        aria-label="first page"
+      >
+        {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
+      </IconButton>
+      <IconButton onClick={handleBackButtonClick} disabled={page === 0} aria-label="previous page">
+        {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+      </IconButton>
+      <IconButton
+        onClick={handleNextButtonClick}
+        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+        aria-label="next page"
+      >
+        {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+      </IconButton>
+      <IconButton
+        onClick={handleLastPageButtonClick}
+        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+        aria-label="last page"
+      >
+        {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
+      </IconButton>
+    </Root>
+  );
+}
+TablePaginationActions.propTypes = {
+  count: PropTypes.number.isRequired,
+  onChangePage: PropTypes.func.isRequired,
+  page: PropTypes.number.isRequired,
+  rowsPerPage: PropTypes.number.isRequired,
+};
+function createData(name, produto, quantidade, data) {
+  return { name, produto, quantidade, data};
+}
+
+//aqui fazer a função que irá trazer as informações do banco de dados
+    const rows = [
+      createData('A', 'banana', 13, '24/06/2019'),
+      createData('B', 'banana', 13, '24/06/2019'),
+      createData('C', 'banana', 13, '24/06/2019'),
+      createData('D', 'banana', 13, '24/06/2019'),
+      createData('E', 'banana', 13, '24/06/2019'),
+      createData('F', 'banana', 13, '24/06/2019'),
+      createData('G', 'banana', 13, '24/06/2019'),
+      createData('H', 'banana', 13, '24/06/2019'),
+    
+    ];
 
 export default function Relatorio() {
-
-
+  
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [empresas, setEmpresas] = useState([]);
   const [produtosVinculados , setProdutosVinculados] = useState([]);
+  const [dataInicial , setDataInicial] = useState(Date);
+  const [dataFinal , setDataFinal] = useState(Date);
+  const [empresaSelec, setEmpresaSelec] = useState('');
+  const [produtoSelec, setProdutoSelec] = useState('');
+  const [relatFiltrado, setRelatFiltrado] = useState([]);
+
+  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+  
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+  
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   
   const pegarEmpresas = useCallback(async () => {
   
@@ -67,172 +135,204 @@ export default function Relatorio() {
       resposta.forEach(doc => {
         resp.push({id: doc.id, ...doc.data()});
       })
-  
       setEmpresas(resp);
     } catch (error) {
       console.log('error ao selecionar Empresas', error);
     }
   },[]);
-
-
   
   const pegarProdutos = useCallback(async (empresa) => {
     
     try {
-      const resposta = await firebase.firestore().collection('empresas').doc(empresa.id).collection('produtosVinculados').get();
-      console.log(resposta)
-  
-      const resp = [];
-  
-      resposta.forEach(doc => {
-        resp.push({id: doc.id, ...doc.data()});
-      })
-  
-      setProdutosVinculados(resp);
+      if(empresa) {
+        const resposta = await firebase.firestore().collection('empresas').doc(empresa.id).collection('produtosVinculados').get();
+      
+        const resp = [];
+        
+        resposta.forEach(doc => {
+          resp.push({id: doc.id, ...doc.data()});
+        })
+        setEmpresaSelec(`${empresa.id}_${empresa.nome}`);
+        console.log(resp)
+        setProdutosVinculados(resp);
+      }
+
+      
     } catch (error) {
       console.log('error ao recuperar produtos', error);
     }
   },[]);
 
-
-  
   useEffect(() => {
     pegarEmpresas();
     pegarProdutos();
   },[pegarEmpresas, pegarProdutos])
   
+  const filtrarProdutos = async () => {
+    try {
+    const response = await firebase.firestore().collection("relatorios")
+    .where("empresaEntrada", "==", `${empresaSelec}`)
+    .orderBy("dataRealizada").startAt(dataInicial).endAt(dataFinal).limit(25).get();
+
+    const resp = [];
+    response.forEach(doc => {
+      resp.push({id: doc.id, ...doc.data()});
+    });
+
+    console.log(resp);
+    setRelatFiltrado(resp);
 
 
-  function createData(name, produto, quantidade, data) {
-    return { name, produto, quantidade, data};
-  }
-
-
-  //função de datas
-
-  // const filtrarRelatorio = async () => {
-  //   try{
-  //     const resposta = await firebase.firestore().collection('produtos').where('data' , 'beetween' , 'dataSelecionada')
-  //   }
-  //   catch (error){
-  //     console.log('error nas datas', error)
-  //   }
-  //      }
-
-  
-      //aqui fazer a função que irá trazer as informações do banco de dados
-      const rows = [
-        createData('A', 'banana', 13, '24/06/2019'),
-        createData('B', 'banana', 13, '24/06/2019'),
-        createData('C', 'banana', 13, '24/06/2019'),
-        
-      ];
-
-     const classes = useStyles();
-
+    } catch(error) {
+      console.log('erro no filtro', error);
+    }
+    
+   
+ };
 
   return (
     <>
     <Menu/>
+    <Empresa>
     <Container>
+      <Typography className="textoRegistro" variant="h5">
+        Filtro
+      </Typography>
+      <Divider style={{paddingTop: "5px", marginBottom: "25px"}}/>
         <Grid container spacing={3}>
-            <Grid  item xs={6}>
+            <Grid container item xs={6}>
                     <Autocomplete
                             id="empresa"
                             options={empresas}
                             getOptionLabel={(option) => option.nome}
-                            onChange={(event,option) => pegarProdutos (option)}
+                            onChange={(event,option) => option ? pegarProdutos (option) : ''}
                             style={{ width: 580 }}
-                            disableClearable
                             renderInput={(params) => <TextField {...params} label="Selecione a empresa" variant="outlined" />}
                     />
             </Grid>
 
-            <Grid item xs={4}></Grid>
+            <Grid container item xs={4}/>
 
-            <Grid  item xs={2}>
-              <form className={classes.container} noValidate>
+            <Grid  container item xs={2}>
                 <TextField
-                  id="date"
                   label="Data Inicial"
                   type="date"
-                  defaultValue=""
+                  onChange={(date)=> setDataInicial(date.target.valueAsDate)}
                   fullWidth={true}
-                  className={classes.textField}
                   InputLabelProps={{
                     shrink: true,
                   }}
                 />
-              </form>
             </Grid>
 
-            <Grid  item xs={6}>     
-                    <form className={classes.root} noValidate autoComplete="off">
+            <Grid  container item xs={6}>     
                     <Autocomplete
                             id="produto-vinculado"
                             options={produtosVinculados}
                             getOptionLabel={(option) => option.nome}
+                            onChange={(event,option) => option ? setProdutoSelec(option.id) : ''}
                             style={{ width: 580 }}
-                            disableClearable
                             renderInput={(params) => <TextField {...params} label="Selecione o produto" variant="outlined" />}
                     />
-                    </form>
             </Grid>
 
-            <Grid item xs={4}></Grid>
+            <Grid container item xs={4}/>
 
-            <Grid item xs={2}>
-              
-              <form className={classes.container} noValidate>
+            <Grid container item xs={2}>             
                 <TextField
-                  id="date"
                   label="Data Final"
                   type="date"
-                  defaultValue=""
+                  onChange={(date)=> setDataFinal(date.target.valueAsDate)}
                   fullWidth={true}
-                  className={classes.textField}
                   InputLabelProps={{
                     shrink: true,
                   }}
                 />
-              </form>
-
             </Grid>
 
-            <Grid item xs>            
-            </Grid>
+            <Grid container item xs/>            
+            
             
             <Grid  container item xs={2} justify="flex-end">     
-               <Botao>FILTRAR</Botao>
+               <Botao
+               onClick={() => filtrarProdutos()}
+               >FILTRAR
+               </Botao>
             </Grid>
                 
         </Grid>     
-          <TableContainer className={classes.container} component={Paper}>
-           <Table className={classes.table} aria-label="customized table">
+          <Typography className="textoRegistro" variant="h5">
+            Resultado
+          </Typography>
+          <Divider style={{paddingTop: "5px", marginBottom: "25px"}}/>
+          <TableContainer  component={Paper}>
+           <Table  aria-label="customized table">
             <TableHead>
               <TableRow>
                 <StyledTableCell>Empresas</StyledTableCell>
-                <StyledTableCell align="right">Nome do Produto</StyledTableCell>
-                <StyledTableCell align="right">Quantidade</StyledTableCell>
-                <StyledTableCell align="right">Data</StyledTableCell>
+                <StyledTableCell align="left">Quantidade</StyledTableCell>
+                <StyledTableCell align="left">Data de Entrada</StyledTableCell>
+                <StyledTableCell align="right">Data de Entrega</StyledTableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
-              {rows.map((row) => (
-                <StyledTableRow key={row.name}>
-                  <StyledTableCell component="th" scope="row">
-                    {row.name}
-                  </StyledTableCell>
-                  <StyledTableCell align="right">{row.produto}</StyledTableCell>
-                  <StyledTableCell align="right">{row.quantidade}</StyledTableCell>
-                  <StyledTableCell align="right">{row.data}</StyledTableCell>
-                  
-                </StyledTableRow>
+            {(relatFiltrado.length < 1 ? 
+              <TableBody></TableBody>
+            : (
+              <TableBody>
+            {(rowsPerPage > 0
+            ? relatFiltrado.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            : relatFiltrado
+            ).map((rows) => (
+              <TableRow key={rows.id}>
+                <TableCell component="th" scope="row">
+                  {rows.empresaEntrada.slice(rows.empresaEntrada.indexOf("_")+1)}
+                </TableCell>
+                <TableCell style={{ width: 400 }} align="left">
+                  {rows.produtos.length}
+                </TableCell>
+                <TableCell style={{ width: 200}} align="left">
+                {new Date(rows.dataRealizada.seconds*1000).toLocaleDateString('pt-BR')}
+                </TableCell>
+                <TableCell style={{ width: 160 }} align="right">
+                  {new Date(rows.dataEntrega.seconds*1000).toLocaleDateString('pt-BR')}
+                </TableCell>
+              </TableRow>
               ))}
+              {emptyRows > 0 && (
+            <TableRow style={{ height: 53 * emptyRows }}>
+              <TableCell colSpan={6} />
+            </TableRow>
+              )}
             </TableBody>
+            )
+            
+            )
+            }
+            
+            <TableFooter>
+          <TableRow>
+            <TablePagination
+              labelRowsPerPage={'Linhas por página'}
+              rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+              colSpan={3}
+              count={rows.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              SelectProps={{
+                inputProps: { 'aria-label': 'rows per page' },
+                native: true,
+              }}
+              onChangePage={handleChangePage}
+              onChangeRowsPerPage={handleChangeRowsPerPage}
+              ActionsComponent={TablePaginationActions}
+            />
+          </TableRow>
+          </TableFooter>
            </Table>
          </TableContainer>
     </Container>
+    </Empresa>
+    <Footer/>
     </>
   );
 }

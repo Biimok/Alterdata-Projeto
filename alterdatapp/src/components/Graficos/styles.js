@@ -3,11 +3,29 @@ import styled from 'styled-components';
 export const GrafStyle = styled.div`
 
 .root {
-flex-Grow: 1;
+flex-Grow: 1.5;
+
 }
+
   
-.border {
-border-style: double;
-}
+.graficoPizza {
+    border-style: groove;
+    border-radius: 5px;
+    border-color: #0f98ab;
+    margin-top:36px;
+    }
+    .graficoColuna {
+        border-style: groove;
+        border-radius: 5px;
+        border-color: #0f98ab;
+    margin-top:36px;
+    }
+    
+    .graficoLinha {
+        border-style: groove;
+        border-radius: 5px;
+        border-color: #0f98ab;
+        margin-top:36px;
+    }
 
 `;
