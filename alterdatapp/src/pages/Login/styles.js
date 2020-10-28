@@ -1,14 +1,11 @@
-import styled from 'styled-components';
-
+import styled from "styled-components";
 
 export const Wrap = styled.div`
-display: flex;
+  display: flex;
 
-.form {
-  border-radius: 20px;
-}
-
-
+  .form {
+    border-radius: 20px;
+  }
 
   .paper {
     margin-top: 8px;
@@ -25,7 +22,7 @@ display: flex;
 
   .espaco {
     padding: 20px 20px;
-   
+
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -36,7 +33,7 @@ display: flex;
   }
 
   .bloco {
-    background-color:#E6E6E6;
+    background-color: #e6e6e6;
     border-radius: 10px;
     padding: 20px;
     width: 400px;
@@ -55,5 +52,4 @@ display: flex;
     height: 10px;
     width: 230px;
   }
-`
-                                                                                                  
+`;

@@ -8,7 +8,6 @@ import * as Yup from "yup";
 import Button from "../../components/Button";
 import { Empresa } from "./styles";
 import { Divider, Typography, Container } from "@material-ui/core";
-import Footer from '../../components/Footer';
 
 function CadastroEmpresa() {
   const formRef = useRef(null);
@@ -78,7 +77,7 @@ function CadastroEmpresa() {
           <Typography className="textoRegistro" variant="h5">
             Registro
           </Typography>
-          <Divider style={{paddingTop: "5px"}}/>
+          <Divider style={{ paddingTop: "5px" }} />
           <Form className="form" ref={formRef} onSubmit={setEmpresa}>
             <div className="espacoInput">
               <Input
@@ -181,7 +180,7 @@ function CadastroEmpresa() {
               <Typography className="textoContato" variant="h5">
                 Contato
               </Typography>
-              <Divider style={{paddingTop:"5px"}}/>
+              <Divider style={{ paddingTop: "5px" }} />
             </div>
 
             <div className="espacoInput">
@@ -229,7 +228,6 @@ function CadastroEmpresa() {
           </Form>
         </Container>
       </Empresa>
-      <Footer/>
     </>
   );
 }

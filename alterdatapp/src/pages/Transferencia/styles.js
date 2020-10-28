@@ -1,75 +1,77 @@
-import styled from 'styled-components';
-
+import styled from "styled-components";
 
 export const Transf = styled.div`
-display: flex;
+  display: flex;
+  min-height: calc(100%-64px);
+  flex: 1;
 
-.textoTransf {
+  .textoTransf {
     color: #191967;
     font-weight: bold;
     text-align: left;
-    }
+  }
 
-.espacoInput {
-    display:flex;
+  .espacoInput {
+    display: flex;
     padding: 10px 10px;
-    
-    }
+  }
 
-#empresa-saida {
+  #empresa-saida {
     height: 10px;
-}
+  }
 
-#empresa-entrada {
+  #empresa-entrada {
     height: 10px;
-}
+  }
 
-#data {
+  #data {
     height: 10px;
-}
+  }
 
-#descricao {
+  #descricao {
     height: 10px;
-}
+  }
 
-#produto {
+  #produto {
     height: 10px;
-}
+  }
 
-.espaco {
+  .espaco {
     margin-right: 20px;
     height: 10px;
-}
+  }
 
-.textoProduto {
+  .textoProduto {
     color: #191967;
     font-weight: bold;
     text-align: left;
     padding-top: 30px;
-}
+  }
 
-.botao {
+  .botao {
     padding-top: 20px;
     justify-content: space-between;
     display: flex;
-    flex: 1;  
-}
+    flex: 1;
+  }
 
-.adicionar {
-    background-color:  rgb(15, 152, 171);
+  .adicionar {
+    background-color: rgb(15, 152, 171);
     color: white;
     width: 40px;
     height: 40px;
     margin-left: 20px;
-    
-    
-:hover {
-background-color:  rgb(15, 152, 171);
-}
-}
 
-.textoAdicional {
-padding-bottom: 20px;
-}
+    :hover {
+      background-color: rgb(15, 152, 171);
+    }
+  }
 
-`
+  .textoAdicional {
+    padding-bottom: 20px;
+  }
+
+  .espacoDivider {
+    padding-top: 15px;
+  }
+`;

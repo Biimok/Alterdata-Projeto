@@ -1,12 +1,7 @@
-import React from 'react';
+import React from "react";
 
-import { AuthProvider } from './auth';
+import { AuthProvider } from "./auth";
 
-const AppProvider = ({ children }) => (
-  <AuthProvider>
-    { children }
-  </AuthProvider>
-);
+const AppProvider = ({ children }) => <AuthProvider>{children}</AuthProvider>;
 
 export default AppProvider;
-  

@@ -1,16 +1,12 @@
 import React, { useState, useRef } from "react";
 import { useAuth } from "../../hooks/auth";
 import { useHistory } from "react-router-dom";
-import Button from '../../components/Button';
-import Input from '../../components/Form/input';
-import { Form } from '@unform/web';
-import * as Yup from 'yup';
+import Button from "../../components/Button";
+import Input from "../../components/Form/input";
+import { Form } from "@unform/web";
+import * as Yup from "yup";
 
-import {
-  Avatar,
-  InputAdornment,
-  Container,
-} from "@material-ui/core";
+import { Avatar, InputAdornment, Container } from "@material-ui/core";
 import Email from "@material-ui/icons/Email";
 import Lock from "@material-ui/icons/Lock";
 import logo from "../../assets/logo.png";
@@ -23,11 +19,9 @@ function Login() {
   const formRef = useRef(null);
 
   async function handleSubmit(data) {
-    
     const schema = Yup.object().shape({
       email: Yup.string().required(),
       password: Yup.string().required(),
-      
     });
 
     await schema.validate(data, {
@@ -55,9 +49,8 @@ function Login() {
     <>
       <Wrap>
         <Container className="bloco" component="main" maxWidth="xs">
-    
-          <Form className = "form" onSubmit={handleSubmit} ref={formRef}>
-           <div className="espaco">
+          <Form className="form" onSubmit={handleSubmit} ref={formRef}>
+            <div className="espaco">
               <div className="paper">
                 <Avatar className="avatar">
                   <img className="logo" src={logo} alt="personagem login" />
@@ -90,18 +83,12 @@ function Login() {
                     ),
                   }}
                 />
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                >
+                <Button type="submit" variant="contained" color="primary">
                   {loading ? "Carregando..." : "Entrar"}
                 </Button>
-                
               </div>
-              </div>
+            </div>
           </Form>
-         
         </Container>
       </Wrap>
     </>
