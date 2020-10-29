@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
 import firebase, { firestore } from "firebase/app";
-import { useHistory, useParams } from "react-router-dom";
 import "firebase/firestore";
 import {
   TextField,
@@ -9,22 +8,18 @@ import {
   Typography,
   Fab,
   Grid,
-  ListItemSecondaryAction,
   ListItem,
   List,
-  IconButton,
+  ListItemText
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import MenuNovo from "../../components/Menu";
 import { Transf } from "./styles";
 import Button from "../../components/Button";
-import DeleteIcon from "@material-ui/icons/Delete";
 // import { Container } from './styles';
 
 function Transferencia() {
-  const history = useHistory();
-  const { transferencia } = useParams();
 
   const [listaEmpresas, setListaEmpresas] = useState([]);
   const [listaProdutos, setListaProdutos] = useState([]);
@@ -299,15 +294,12 @@ function Transferencia() {
             </Grid>
             <Grid item xs></Grid>
           </Grid>
-
           <Typography className="textoProduto" variant="h5">
             Produtos
           </Typography>
           <Divider style={{ paddingTop: "5px" }} />
-
           <Grid className="espacoDivider" container spacing={3}>
             <Grid item xs></Grid>
-
             <Grid item xs={6}>
               <div className="espacoInput">
                 <Autocomplete
@@ -323,62 +315,60 @@ function Transferencia() {
                     <TextField {...params} label="Produto" variant="outlined" />
                   )}
                 />
+                 
+                <div>
                 <TextField
                   type="number"
                   inputProps={{
                     max: produto.quantidade ? produto.quantidade : "",
                     min: 0,
                   }}
-                  style={{ width: 75 }}
+                  style={{ width: 70 }}
                   defaultValue={0}
                   onChange={(number) =>
                     setQtdSelecionada(number.target.valueAsNumber)
                   }
                 />
-                <div>
-                  {produto.quantidade ? (
-                    <Typography variant="caption">
-                      Max: {produto.quantidade > 0 ? produto.quantidade : "N/A"}
-                    </Typography>
+              <div>
+                {produto.quantidade ? (
+                 <Typography variant="caption">
+                    Max: {produto.quantidade > 0 ? produto.quantidade : "N/A"}
+                 </Typography>
                   ) : null}
-                </div>
+                  </div>
+                  </div>
 
-                <Fab className="adicionar" onClick={addProduto}>
+                <Fab className="adicionar" onClick={produto.id ? addProduto : ''}>
                   <AddIcon />
                 </Fab>
-              </div>
-              <div>
+               </div>
+               <div className="botaoLimpar">
+               <Button style={{width: "135px"}} onClick={() => setProdutosSelec([])}>Limpar Items</Button>
+               </div>
+               <div>
+                 
                 {produtosSelec.map((produto) => (
-                  <div className="textoAdicional" key={produto.id}>
-                    <List>
-                      <ListItemSecondaryAction>
-                        <ListItem>
-                          <p>
+                  <List key={produto.id}>
+                    <ListItem className="lista">
+                      <ListItemText className="produto-nome">
                             Nome:{" "}
                             {produto.id.slice(produto.id.indexOf("_") + 1)}
-                          </p>
-                          <ListItem>
-                            <p>Quantidade: {produto.qtdSelecionada}</p>
-                            <ListItem>
-                              <IconButton edge="end" aria-label="delete">
-                                <DeleteIcon />
-                              </IconButton>
-                            </ListItem>
-                          </ListItem>
-                        </ListItem>
-                      </ListItemSecondaryAction>
-                    </List>
-                  </div>
+                      </ListItemText>
+                      <ListItemText className="quantidade"> Quantidade: {produto.qtdSelecionada}</ListItemText>
+                       
+                    </ListItem>
+                    < Divider style={{ paddingTop: "2px" }}/>
+                  </List>
+                  
                 ))}
               </div>
             </Grid>
             <Grid item xs></Grid>
           </Grid>
-
-          <div className="botao">
-            <div></div>
-            <div>
-              <Button>Cancelar</Button>
+            <div className="botao">
+              <div></div>
+              <div>
+              <Button onClick={() => window.location.reload()}>Cancelar</Button>
               <Button onClick={() => upRelatorios()}>Finalizar</Button>
             </div>
           </div>

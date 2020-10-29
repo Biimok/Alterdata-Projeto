@@ -78,7 +78,7 @@ function CadastroProduto() {
                     id="campoMaior"
                     type="number"
                     inputProps={{
-                      step: "0.1",
+                      step: "0.01",
                     }}
                     name="valor"
                     label="Valor"
@@ -134,7 +134,7 @@ function CadastroProduto() {
               <div className="botao">
                 <div></div>
                 <div>
-                  <Button>Cancelar</Button>
+                  <Button onClick={() => window.location.reload()}>Cancelar</Button>
                   <Button type="submit">Cadastrar</Button>
                 </div>
               </div>

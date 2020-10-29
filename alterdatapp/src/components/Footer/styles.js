@@ -4,7 +4,8 @@ export const Fot = styled.div`
   .root {
     display: flex;
     flex-direction: column;
-    padding-top: 40px;
+    padding-top: 20px;
+    justify-content:center;
   }
 
   .footer {

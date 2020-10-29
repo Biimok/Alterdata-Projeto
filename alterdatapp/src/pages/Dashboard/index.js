@@ -1,15 +1,15 @@
 import React from "react";
 import Grafico from "../../components/Graficos/graficos";
 import Menu from "../../components/Menu";
-import { Dash } from "./styles";
+import { Container } from "@material-ui/core";
 
 function Dashboard() {
   return (
     <>
       <Menu />
-      <Dash>
+      <Container fixed>
         <Grafico />
-      </Dash>
+      </Container>
     </>
   );
 }

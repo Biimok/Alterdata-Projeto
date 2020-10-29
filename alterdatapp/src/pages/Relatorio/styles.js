@@ -10,7 +10,10 @@ export const Empresa = styled.div`
     color: #191967;
     font-weight: bold;
     text-align: left;
-    margin: 20px 0px 10px 0px;
+  }
+  
+  .espaco {
+    padding-top: 30px;
   }
 `;
 

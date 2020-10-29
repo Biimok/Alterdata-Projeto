@@ -67,11 +67,34 @@ export const Transf = styled.div`
     }
   }
 
-  .textoAdicional {
-    padding-bottom: 20px;
-  }
+.espacoDivider {
+padding-top: 15px;
+}
 
-  .espacoDivider {
-    padding-top: 15px;
-  }
+.lista {
+  display: flex;
+  flex-direction: row;
+
+}
+
+.quantidade {
+  text-align:end;
+}
+
+.produto-nome {
+  text-align:start;
+}
+
+.botaoLimpar {
+ 
+  flex-direction: column;
+  display: flex;
+  flex: 1;
+  margin-left: 150px;
+  
+}
+
 `;
+
+
+

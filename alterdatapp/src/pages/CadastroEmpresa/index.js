@@ -77,7 +77,7 @@ function CadastroEmpresa() {
           <Typography className="textoRegistro" variant="h5">
             Registro
           </Typography>
-          <Divider style={{ paddingTop: "5px" }} />
+          <Divider style={{ paddingTop: "5px"}} />
           <Form className="form" ref={formRef} onSubmit={setEmpresa}>
             <div className="espacoInput">
               <Input
@@ -221,7 +221,7 @@ function CadastroEmpresa() {
             <div className="botao">
               <div></div>
               <div>
-                <Button>Cancelar</Button>
+                <Button onClick={() => window.location.reload()}>Cancelar</Button>
                 <Button type="submit">Cadastrar</Button>
               </div>
             </div>

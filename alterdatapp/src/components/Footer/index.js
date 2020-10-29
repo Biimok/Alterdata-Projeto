@@ -11,8 +11,9 @@ export default function Footer() {
           <Typography className="texto">
             © 2020 Bimer 2 | Todos os direitos reservados
           </Typography>
+          <div className="icone">
           <a
-            className="icone"
+            
             target="_blank"
             rel="noopener noreferrer"
             href="https://github.com/Biimok/Alterdata-Projeto"
@@ -21,6 +22,7 @@ export default function Footer() {
           >
             <GitHubIcon color="primary" title="GitHub do projeto!" />
           </a>
+          </div>
         </footer>
       </div>
     </Fot>

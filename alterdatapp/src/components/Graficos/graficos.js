@@ -119,11 +119,10 @@ function Graficos() {
     <GrafStyle>
       <Container fixed>
         <div className="root">
-          <Grid container spacing={1}>
-            <Grid item xs>
+          <Grid container spacing={3}>
+            <Grid className="graficoColuna" item xs>
               <Chart
-                className="graficoColuna"
-                width={550}
+              
                 height={340}
                 chartType="BarChart"
                 data={barData}
@@ -142,10 +141,9 @@ function Graficos() {
               />
             </Grid>
 
-            <Grid item xs>
+            <Grid className="graficoPizza" item xs>
               <Chart
-                className="graficoPizza"
-                width={550}
+                
                 height={340}
                 chartType="PieChart"
                 data={pieData}
@@ -173,11 +171,11 @@ function Graficos() {
           </Grid>
 
           <Grid container spacing={1}>
-            <Grid item xs>
+            <Grid className="graficoLinha" item xs>
               <Chart
-                className="graficoLinha"
-                width={1170} //1170, 550 para deixar padrão
-                height={340} //340
+                //340
+                
+                height= {340}
                 chartType="LineChart"
                 data={grafData}
                 options={{
@@ -195,7 +193,6 @@ function Graficos() {
                 rootProps={{ "data-testid": "1" }}
               />
             </Grid>
-            <Grid item xs></Grid>
           </Grid>
         </div>
       </Container>
