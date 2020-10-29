@@ -108,7 +108,6 @@ export default function Relatorio() {
   const [empresaSelec, setEmpresaSelec] = useState("");
   const [produtoSelec, setProdutoSelec] = useState("");
   const [relatFiltrado, setRelatFiltrado] = useState([]);
-  const [apagar, setApagar] = useState(true);
 
   const emptyRows =
     rowsPerPage -
