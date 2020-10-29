@@ -1,8 +1,6 @@
-<img src="https://imgur.com/M41ckS0">
-
 
 <h1 align="center">Controle de Estoque Bimer 2!</h1>
- <p align="center"> <strong> Bimer 2 é a maneira mais prática de organizar e gerenciar seu estoque!</strong></p>
+<p align="center"> <strong> Bimer 2 é a maneira mais prática de organizar e gerenciar seu estoque!</strong></p>
 
 <p align="center">
   <a href="#-descrição">Descrição</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
@@ -29,13 +27,12 @@
 ## ⌨ Tecnologia 
 
 👉<i> firebase </i><br/>
-👉<i> json-server </i><br/>
 👉<i> @material-ui </i><br/>
+👉<i> fontsource-roboto </i><br/>
 👉<i> react-dom </i><br/>
-👉<i> react-native </i><br/>
-👉<i> react-navigation </i><br/>
+👉<i> react-google-charts </i><br/>
+👉<i> react-input-mask </i><br/>
 👉<i> styled-components </i><br/>
-👉<i> @testing-library </i><br/>
 👉<i> @unform </i><br/>
 👉<i> yup </i><br/>
 
