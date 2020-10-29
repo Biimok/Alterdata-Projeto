@@ -1,6 +1,3 @@
-<img src="../assets/logo.png" width="400">
-
-
 <h1 align="center">Controle de Estoque Bimer 2!</h1>
 <p align="center"> <strong> Bimer 2 é a maneira mais prática de organizar e gerenciar seu estoque!</strong></p>
 
